@@ -53,22 +53,30 @@ class Cart with ChangeNotifier {
 
   void addItem(Product product) {
     if (_items.containsKey(product.id)) {
-      _items.update(
-          product.id,
-          (value) => CartItem(
-              id: value.id,
-              title: value.title,
-              price: value.price,
-              quantity: value.quantity + 1));
+      _incrementProductQuantity(product);
     } else {
-      _items.putIfAbsent(
-          product.id,
-          () => CartItem(
-              id: DateTime.now().toString(),
-              title: product.title,
-              price: product.price));
+      _addNewProduct(product);
     }
     notifyListeners();
+  }
+
+  void _addNewProduct(Product product) {
+    _items.putIfAbsent(
+        product.id,
+        () => CartItem(
+            id: DateTime.now().toString(),
+            title: product.title,
+            price: product.price));
+  }
+
+  void _incrementProductQuantity(Product product) {
+    _items.update(
+        product.id,
+        (value) => CartItem(
+            id: value.id,
+            title: value.title,
+            price: value.price,
+            quantity: value.quantity + 1));
   }
 
   void clear() {

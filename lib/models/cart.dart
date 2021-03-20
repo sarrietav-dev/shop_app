@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:shop_app/models/interfaces/json_parsable.dart';
 import 'package:shop_app/models/product.dart';
+import 'package:http/http.dart' as http;
 
 class CartItem implements JSONParsable {
   final String id;
@@ -61,12 +64,30 @@ class Cart with ChangeNotifier {
   }
 
   void _addNewProduct(Product product) {
+    final url = Uri.https(
+        "flutter-meal-app-99b13-default-rtdb.firebaseio.com", "/cart.json");
+
     _items.putIfAbsent(
         product.id,
         () => CartItem(
             id: DateTime.now().toString(),
             title: product.title,
             price: product.price));
+
+    try {
+      http.patch(url, body: json.encode(_parseCartItemsToJson()));
+    } catch (error) {
+      _items.remove(product.id);
+      throw error;
+    }
+  }
+
+  Map<String, Map<String, dynamic>> _parseCartItemsToJson() {
+    Map<String, Map<String, dynamic>> parsedData;
+    _items.forEach((key, value) {
+      parsedData[key] = value.toJSON();
+    });
+    return parsedData;
   }
 
   void _incrementProductQuantity(Product product) {

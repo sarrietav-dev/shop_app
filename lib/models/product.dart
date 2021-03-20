@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:shop_app/models/interfaces/json_parsable.dart';
 import 'package:http/http.dart' as http;
@@ -23,7 +25,7 @@ class Product with ChangeNotifier implements JSONParsable {
         "/products/$id.json");
     isFavourite = !isFavourite;
     try {
-      await http.patch(url, body: this.toJSON());
+      await http.patch(url, body: json.encode(this.toJSON()));
     } catch (error) {
       isFavourite = !isFavourite;
       throw error;

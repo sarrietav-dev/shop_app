@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:shop_app/models/interfaces/json_parsable.dart';
+import 'package:http/http.dart' as http;
 
 class Product with ChangeNotifier implements JSONParsable {
   final String id;
@@ -17,8 +18,16 @@ class Product with ChangeNotifier implements JSONParsable {
       @required this.imageUrl,
       this.isFavourite = false});
 
-  void toggleFavouriteStatus() {
+  Future<void> toggleFavouriteStatus() async {
+    final url = Uri.https("flutter-meal-app-99b13-default-rtdb.firebaseio.com",
+        "/products/$id.json");
     isFavourite = !isFavourite;
+    try {
+      await http.patch(url, body: this.toJSON());
+    } catch (error) {
+      isFavourite = !isFavourite;
+      throw error;
+    }
     notifyListeners();
   }
 

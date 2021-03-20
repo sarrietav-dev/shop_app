@@ -66,15 +66,23 @@ class _CartOverview extends StatelessWidget {
             ),
             Consumer<Orders>(
               builder: (_, orders, child) => TextButton(
-                onPressed: () {
-                  orders.addOrder(cart);
-                  cart.clear();
-                },
+                onPressed: cart.items.isEmpty
+                    ? null
+                    : () {
+                        orders.addOrder(cart);
+                        cart.clear();
+                      },
                 child: child,
+                style: ButtonStyle(foregroundColor:
+                    MaterialStateProperty.resolveWith((states) {
+                  if (states.contains(MaterialState.disabled))
+                    return Colors.grey;
+                  return Theme.of(context).primaryColor;
+                })),
               ),
               child: Text(
                 "ORDER NOW",
-                style: TextStyle(color: Theme.of(context).primaryColor),
+                style: TextStyle(),
               ),
             ),
           ],

@@ -63,6 +63,16 @@ class Cart with ChangeNotifier {
     notifyListeners();
   }
 
+  void _incrementProductQuantity(Product product) {
+    _items.update(
+        product.id,
+        (value) => CartItem(
+            id: value.id,
+            title: value.title,
+            price: value.price,
+            quantity: value.quantity + 1));
+  }
+
   void _addNewProduct(Product product) {
     final url = Uri.https(
         "flutter-meal-app-99b13-default-rtdb.firebaseio.com", "/cart.json");
@@ -88,16 +98,6 @@ class Cart with ChangeNotifier {
       parsedData[key] = value.toJSON();
     });
     return parsedData;
-  }
-
-  void _incrementProductQuantity(Product product) {
-    _items.update(
-        product.id,
-        (value) => CartItem(
-            id: value.id,
-            title: value.title,
-            price: value.price,
-            quantity: value.quantity + 1));
   }
 
   void clear() {

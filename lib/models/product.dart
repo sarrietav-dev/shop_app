@@ -62,6 +62,7 @@ class ProductBuilder {
     description = "";
     price = 0;
     imageUrl = "";
+    isFavourite = false;
   }
 
   ProductBuilder.existing(Product product) {
@@ -107,13 +108,19 @@ class ProductBuilder {
     return this;
   }
 
+  ProductBuilder setIsFavourite(bool isFavourite) {
+    this.isFavourite = isFavourite;
+    return this;
+  }
+
   Product build() {
     return Product(
         id: id,
         title: title,
         description: description,
         price: price,
-        imageUrl: imageUrl);
+        imageUrl: imageUrl,
+        isFavourite: isFavourite);
   }
 
   @override

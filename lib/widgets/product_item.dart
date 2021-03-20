@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shop_app/models/cart.dart';
 import 'package:shop_app/models/product.dart';
 import 'package:shop_app/pages/product_detail_page.dart';
+import 'package:shop_app/utils/show_error_dialog.dart';
 
 class ProductItem extends StatelessWidget {
   void handleTap(BuildContext context, Product product) => Navigator.of(context)
@@ -24,7 +25,7 @@ class ProductItem extends StatelessWidget {
   }
 }
 
-class _ProductItemFooter extends StatelessWidget {
+class _ProductItemFooter extends StatefulWidget {
   _ProductItemFooter({
     Key key,
     @required this.product,
@@ -32,17 +33,46 @@ class _ProductItemFooter extends StatelessWidget {
 
   final Product product;
 
+  @override
+  __ProductItemFooterState createState() => __ProductItemFooterState();
+}
+
+class __ProductItemFooterState extends State<_ProductItemFooter>
+    with ErrorDialog {
+  bool _isFavouriteLoading = false;
+
   Widget build(BuildContext context) {
     return GridTileBar(
       backgroundColor: Colors.black87,
-      leading: IconButton(
-          icon: Icon(
-            product.isFavourite ? Icons.favorite : Icons.favorite_outline,
-            color: Theme.of(context).accentColor,
-          ),
-          onPressed: product.toggleFavouriteStatus),
+      leading: _isFavouriteLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : IconButton(
+              icon: Icon(
+                widget.product.isFavourite
+                    ? Icons.favorite
+                    : Icons.favorite_outline,
+                color: Theme.of(context).accentColor,
+              ),
+              onPressed: () async {
+                setState(() {
+                  _isFavouriteLoading = true;
+                });
+
+                try {
+                  await widget.product.toggleFavouriteStatus();
+                } catch (error) {
+                  print(error);
+                  showErrorDialog(context);
+                } finally {
+                  setState(() {
+                    _isFavouriteLoading = false;
+                  });
+                }
+              }),
       title: Text(
-        product.title,
+        widget.product.title,
         textAlign: TextAlign.center,
       ),
       trailing: Consumer<Cart>(
@@ -52,13 +82,13 @@ class _ProductItemFooter extends StatelessWidget {
               color: Theme.of(context).accentColor,
             ),
             onPressed: () {
-              cart.addItem(product);
+              cart.addItem(widget.product);
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 duration: Duration(seconds: 2),
                 content: Text("Item added to the cart!"),
                 action: SnackBarAction(
                     label: "Undo",
-                    onPressed: () => cart.undoLastAddition(product)),
+                    onPressed: () => cart.undoLastAddition(widget.product)),
               ));
             }),
       ),

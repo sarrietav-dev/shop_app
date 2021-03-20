@@ -35,6 +35,55 @@ class CartPage extends StatelessWidget {
   }
 }
 
+class _CartOverview extends StatelessWidget {
+  const _CartOverview({
+    Key key,
+    @required this.cart,
+  }) : super(key: key);
+
+  final Cart cart;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.all(15),
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              "Total",
+              style: TextStyle(fontSize: 20),
+            ),
+            const Spacer(),
+            Chip(
+              label: Text(
+                "\$${cart.totalAmount.toStringAsFixed(2)}",
+                style: const TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Theme.of(context).primaryColor,
+            ),
+            Consumer<Orders>(
+              builder: (_, orders, child) => TextButton(
+                onPressed: () {
+                  orders.addOrder(cart);
+                  cart.clear();
+                },
+                child: child,
+              ),
+              child: Text(
+                "ORDER NOW",
+                style: TextStyle(color: Theme.of(context).primaryColor),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _CartItem extends StatelessWidget {
   const _CartItem({
     Key key,
@@ -111,55 +160,6 @@ class _DismissAlert extends StatelessWidget {
             onPressed: () => Navigator.of(context).pop(true),
             child: const Text("Yes"))
       ],
-    );
-  }
-}
-
-class _CartOverview extends StatelessWidget {
-  const _CartOverview({
-    Key key,
-    @required this.cart,
-  }) : super(key: key);
-
-  final Cart cart;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.all(15),
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              "Total",
-              style: TextStyle(fontSize: 20),
-            ),
-            const Spacer(),
-            Chip(
-              label: Text(
-                "\$${cart.totalAmount.toStringAsFixed(2)}",
-                style: const TextStyle(color: Colors.white),
-              ),
-              backgroundColor: Theme.of(context).primaryColor,
-            ),
-            Consumer<Orders>(
-              builder: (_, orders, child) => TextButton(
-                onPressed: () {
-                  orders.addOrder(cart);
-                  cart.clear();
-                },
-                child: child,
-              ),
-              child: Text(
-                "ORDER NOW",
-                style: TextStyle(color: Theme.of(context).primaryColor),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

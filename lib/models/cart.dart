@@ -64,6 +64,9 @@ class Cart with ChangeNotifier {
   }
 
   void _incrementProductQuantity(Product product) {
+    final url = Uri.https(
+        "flutter-meal-app-99b13-default-rtdb.firebaseio.com", "/cart.json");
+
     _items.update(
         product.id,
         (value) => CartItem(
@@ -71,6 +74,13 @@ class Cart with ChangeNotifier {
             title: value.title,
             price: value.price,
             quantity: value.quantity + 1));
+
+    try {
+      http.patch(url, body: json.encode(_parseCartItemsToJson()));
+    } on Exception catch (error) {
+      _items[product.id].deleteOne();
+      throw error;
+    }
   }
 
   void _addNewProduct(Product product) {

@@ -63,7 +63,6 @@ class __ProductItemFooterState extends State<_ProductItemFooter>
                 try {
                   await widget.product.toggleFavouriteStatus();
                 } catch (error) {
-                  print(error);
                   showErrorDialog(context);
                 } finally {
                   setState(() {

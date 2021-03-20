@@ -93,7 +93,7 @@ class Cart with ChangeNotifier {
   }
 
   Map<String, Map<String, dynamic>> _parseCartItemsToJson() {
-    Map<String, Map<String, dynamic>> parsedData;
+    Map<String, Map<String, dynamic>> parsedData = {};
     _items.forEach((key, value) {
       parsedData[key] = value.toJSON();
     });

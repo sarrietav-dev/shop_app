@@ -170,8 +170,8 @@ class Cart with ChangeNotifier {
   }
 
   Future<void> undoLastAddition(Product product) async {
-    final productLookup =
-        _items.values.firstWhere((element) => element.id == product.id);
+    final productLookup = _items.values
+        .firstWhere((element) => element.id == product.id, orElse: () => null);
     if (productLookup == null) return;
 
     final key =

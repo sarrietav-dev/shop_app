@@ -1,14 +1,11 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:shop_app/http/check_status.dart';
 import 'package:shop_app/http/http_request_handler.dart';
 import 'package:shop_app/http/url_handler.dart';
 import 'package:http/http.dart' as http;
 
-class ProductListingHTTPHandler
-    with StatusChecker
-    implements HTTPRequestHandler {
+class ProductListingHTTPHandler extends HTTPRequestHandler with StatusChecker {
   URLHandler urlHandler;
   final String resourceId;
   final dynamic body;
@@ -26,7 +23,7 @@ class ProductListingHTTPHandler
   }
 
   Future<http.Response> addProduct() async {
-    _checkBody();
+    checkBody();
 
     final response = await http.post(urlHandler.url, body: json.encode(body));
     checkStatus(response);
@@ -35,8 +32,8 @@ class ProductListingHTTPHandler
   }
 
   Future<http.Response> updateProduct() async {
-    _checkResourceId();
-    _checkBody();
+    checkResourceId();
+    checkBody();
 
     final response = await http.patch(urlHandler.getResourceUrl(resourceId),
         body: json.encode(body));
@@ -46,19 +43,11 @@ class ProductListingHTTPHandler
   }
 
   Future<http.Response> deleteProduct() async {
-    _checkResourceId();
+    checkResourceId();
 
     final response = await http.delete(urlHandler.getResourceUrl(resourceId));
     checkStatus(response);
 
     return response;
-  }
-
-  void _checkResourceId() {
-    if (resourceId == null) throw ArgumentError.notNull("resourceID");
-  }
-
-  void _checkBody() {
-    if (body == null) throw ArgumentError.notNull("body");
   }
 }

@@ -2,14 +2,13 @@ import 'package:flutter/foundation.dart';
 
 class URLHandler {
   static const baseUrl = "flutter-meal-app-99b13-default-rtdb.firebaseio.com";
-  final String collectionResourceRoute;
-  String singleResourceRoute;
+  final String collectionName;
 
-  URLHandler({@required this.collectionResourceRoute});
+  URLHandler({@required this.collectionName});
 
-  get url => Uri.https(baseUrl, "$collectionResourceRoute.json");
+  get url => Uri.https(baseUrl, "/$collectionName.json");
 
   Uri getResourceUrl(String resourceId) {
-    return Uri.https(baseUrl, "$collectionResourceRoute/$resourceId.json");
+    return Uri.https(baseUrl, "$collectionName/$resourceId.json");
   }
 }

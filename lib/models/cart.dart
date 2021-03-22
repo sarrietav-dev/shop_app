@@ -32,6 +32,25 @@ class CartItem implements JSONParsable {
   }
 }
 
+class CartItemBuilder {
+  String id;
+  String title;
+  int quantity;
+  double price;
+
+  CartItemBuilder({this.id, this.title, this.quantity, this.price});
+
+  CartItemBuilder.fromJson(Map<String, dynamic> data) {
+    id = data["id"];
+    title = data["title"];
+    quantity = data["quantity"];
+    price = data["price"];
+  }
+
+  CartItem build() =>
+      CartItem(id: id, title: title, price: price, quantity: quantity);
+}
+
 class Cart with ChangeNotifier {
   Map<String, CartItem> _items = {};
 
@@ -47,6 +66,20 @@ class Cart with ChangeNotifier {
       total += value.totalPrice;
     });
     return total;
+  }
+
+  Future<void> fetchItems() async {
+    final url = Uri.https(
+        "flutter-meal-app-99b13-default-rtdb.firebaseio.com", "/cart.json");
+    final response = await http.get(url);
+    _setFetchedItems(json.decode(response.body) as Map<String, dynamic>);
+  }
+
+  void _setFetchedItems(Map<String, dynamic> data) {
+    Map<String, CartItem> _items = {};
+    data.forEach((key, value) {
+      _items[key] = CartItemBuilder.fromJson(value).build();
+    });
   }
 
   void removeItem(String key) {

@@ -14,38 +14,29 @@ class ProductsOverviewPage extends StatefulWidget {
 }
 
 class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
-  bool _isLoading = false;
-  bool _isFetch = false;
-
-  @override
-  void initState() {
-    if (!_isFetch) {
-      setState(() {
-        _isLoading = true;
-      });
-
-      Provider.of<ProductListing>(context, listen: false)
-          .fetchProducts()
-          .then((value) => setState(() {
-                _isLoading = false;
-                _isFetch = true;
-              }));
-    }
-
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: RefreshIndicator(
-        onRefresh: _refreshProducts,
-        child: _isLoading
-            ? const Center(child: const CircularProgressIndicator())
-            : _ProductsGrid(
-                showFavourites: widget.showFavourites,
-              ),
-      ),
+          onRefresh: _refreshProducts,
+          child: FutureBuilder(
+              future: Provider.of<ProductListing>(context, listen: false)
+                  .fetchProducts(),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                  case ConnectionState.active:
+                    const Center(child: const CircularProgressIndicator());
+                    break;
+                  case ConnectionState.done:
+                    _ProductsGrid(
+                      showFavourites: widget.showFavourites,
+                    );
+                    break;
+                }
+                return null;
+              })),
     );
   }
 

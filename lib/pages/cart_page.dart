@@ -12,52 +12,44 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  bool _isFetched = false;
-  bool _isLoading = false;
-
-  @override
-  void initState() {
-    if (!_isFetched) {
-      setState(() {
-        _isLoading = true;
-      });
-      Provider.of<Cart>(context, listen: false).fetchItems().then((value) {
-        setState(() {
-          _isLoading = false;
-          _isFetched = true;
-        });
-      });
-    }
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Your Cart"),
-      ),
-      body: _isLoading
-          ? const Center(child: const CircularProgressIndicator())
-          : Consumer<Cart>(
-              child: const SizedBox(
-                height: 10,
-              ),
-              builder: (_, cart, child) => Column(
-                children: [
-                  _CartOverview(cart: cart),
-                  child,
-                  Expanded(
-                      child: ListView.builder(
-                          itemCount: cart.productCount,
-                          itemBuilder: (context, index) => _CartItem(
-                                cartItemKey: cart.items.keys.toList()[index],
-                                cartItem: cart.items.values.toList()[index],
-                              )))
-                ],
-              ),
-            ),
-    );
+        appBar: AppBar(
+          title: const Text("Your Cart"),
+        ),
+        body: FutureBuilder(
+            future: Provider.of<Cart>(context, listen: false).fetchItems(),
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.done:
+                  return Consumer<Cart>(
+                    child: const SizedBox(
+                      height: 10,
+                    ),
+                    builder: (_, cart, child) => Column(
+                      children: [
+                        _CartOverview(cart: cart),
+                        child,
+                        Expanded(
+                            child: ListView.builder(
+                                itemCount: cart.productCount,
+                                itemBuilder: (context, index) => _CartItem(
+                                      cartItemKey:
+                                          cart.items.keys.toList()[index],
+                                      cartItem:
+                                          cart.items.values.toList()[index],
+                                    )))
+                      ],
+                    ),
+                  );
+                case ConnectionState.none:
+                case ConnectionState.waiting:
+                case ConnectionState.active:
+                  return const Center(child: const CircularProgressIndicator());
+              }
+              return null;
+            }));
   }
 }
 

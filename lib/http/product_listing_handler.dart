@@ -10,7 +10,8 @@ class ProductListingHTTPHandler extends HTTPRequestHandler with StatusChecker {
   final String resourceId;
   final dynamic body;
 
-  ProductListingHTTPHandler({this.body, this.resourceId}) {
+  ProductListingHTTPHandler({this.body, this.resourceId})
+      : super(resourceId: resourceId, body: body) {
     urlHandler = URLHandler(collectionName: "products");
   }
 

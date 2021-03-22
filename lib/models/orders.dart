@@ -64,12 +64,13 @@ class Orders with ChangeNotifier {
     final response = await OrdersHttpHandler().fetchData();
     final data = json.decode(response.body);
     _setOrders = data;
+    notifyListeners();
   }
 
   set _setOrders(List<Map<String, dynamic>> data) {
     _orders = [];
+    if (data == null) return;
     _orders = data.map((e) => OrderBuilder.json(e).build()).toList();
-    notifyListeners();
   }
 
   Future<void> addOrder(Cart order) async {

@@ -61,13 +61,20 @@ class _CartPageState extends State<CartPage> {
   }
 }
 
-class _CartOverview extends StatelessWidget {
+class _CartOverview extends StatefulWidget {
   const _CartOverview({
     Key key,
     @required this.cart,
   }) : super(key: key);
 
   final Cart cart;
+
+  @override
+  __CartOverviewState createState() => __CartOverviewState();
+}
+
+class __CartOverviewState extends State<_CartOverview> {
+  bool _isOrderNowLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -85,18 +92,24 @@ class _CartOverview extends StatelessWidget {
             const Spacer(),
             Chip(
               label: Text(
-                "\$${cart.totalAmount.toStringAsFixed(2)}",
+                "\$${widget.cart.totalAmount.toStringAsFixed(2)}",
                 style: const TextStyle(color: Colors.white),
               ),
               backgroundColor: Theme.of(context).primaryColor,
             ),
             Consumer<Orders>(
               builder: (_, orders, child) => TextButton(
-                onPressed: cart.items.isEmpty
+                onPressed: widget.cart.items.isEmpty
                     ? null
                     : () async {
-                        await orders.addOrder(cart);
-                        await cart.clear();
+                        setState(() {
+                          _isOrderNowLoading = true;
+                        });
+                        await orders.addOrder(widget.cart);
+                        setState(() {
+                          _isOrderNowLoading = false;
+                        });
+                        await widget.cart.clear();
                       },
                 child: child,
                 style: ButtonStyle(foregroundColor:
@@ -106,10 +119,13 @@ class _CartOverview extends StatelessWidget {
                   return Theme.of(context).primaryColor;
                 })),
               ),
-              child: Text(
-                "ORDER NOW",
-                style: TextStyle(),
-              ),
+              child: _isOrderNowLoading
+                  ? const Center(
+                      child: const CircularProgressIndicator(),
+                    )
+                  : const Text(
+                      "ORDER NOW",
+                    ),
             ),
           ],
         ),

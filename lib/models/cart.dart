@@ -155,8 +155,18 @@ class Cart with ChangeNotifier {
   }
 
   void clear() {
+    final url = Uri.https(
+        "flutter-meal-app-99b13-default-rtdb.firebaseio.com", "/cart.json");
+    final deletedMap = _items;
     _items = {};
-    notifyListeners();
+    try {
+      http.delete(url);
+    } on Exception catch (e) {
+      _items = deletedMap;
+      throw e;
+    } finally {
+      notifyListeners();
+    }
   }
 
   void undoLastAddition(Product product) {

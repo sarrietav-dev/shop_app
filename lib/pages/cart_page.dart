@@ -23,6 +23,7 @@ class _CartPageState extends State<CartPage> {
         _isFetched = true;
       });
     }
+    super.initState();
   }
 
   @override

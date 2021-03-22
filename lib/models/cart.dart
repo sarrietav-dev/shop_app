@@ -93,6 +93,7 @@ class Cart with ChangeNotifier {
     } else {
       _addNewProduct(product);
     }
+    fetchItems(); // To always have the Firebase key stored.
     notifyListeners();
   }
 

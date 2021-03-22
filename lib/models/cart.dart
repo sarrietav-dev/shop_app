@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:shop_app/http/cart_http_handler.dart';
 import 'package:shop_app/models/interfaces/json_parsable.dart';
 import 'package:shop_app/models/product.dart';
-import 'package:http/http.dart' as http;
 
 class CartItem implements JSONParsable {
   final String id;
@@ -69,9 +69,7 @@ class Cart with ChangeNotifier {
   }
 
   Future<void> fetchItems() async {
-    final url = Uri.https(
-        "flutter-meal-app-99b13-default-rtdb.firebaseio.com", "/cart.json");
-    final response = await http.get(url);
+    final response = await CartHttpHandler().fetchData();
     _setFetchedItems(json.decode(response.body) as Map<String, dynamic>);
   }
 
@@ -83,18 +81,9 @@ class Cart with ChangeNotifier {
   }
 
   Future<void> removeItem(String key) async {
-    final url = Uri.https("flutter-meal-app-99b13-default-rtdb.firebaseio.com",
-        "/cart/$key.json");
+    await CartHttpHandler(resourceId: key).removeItem();
     final removedItem = _items.remove(key);
-
-    try {
-      await http.delete(url);
-    } on Exception catch (error) {
-      _items[key] = removedItem;
-      throw error;
-    } finally {
-      notifyListeners();
-    }
+    notifyListeners();
   }
 
   Future<void> addItem(Product product) async {
@@ -104,13 +93,11 @@ class Cart with ChangeNotifier {
       await _addNewProduct(product);
     }
     await fetchItems(); // To always have the Firebase key stored.
+
     notifyListeners();
   }
 
   Future<void> _incrementProductQuantity(Product product) async {
-    final url = Uri.https(
-        "flutter-meal-app-99b13-default-rtdb.firebaseio.com", "/cart.json");
-
     _items.update(
         product.id,
         (value) => CartItem(
@@ -120,27 +107,28 @@ class Cart with ChangeNotifier {
             quantity: value.quantity + 1));
 
     try {
-      await http.patch(url, body: json.encode(_parseCartItemsToJson()));
-    } on Exception catch (error) {
+      await CartHttpHandler(body: _parseCartItemsToJson()).update();
+    } catch (error) {
       _items[product.id].deleteOne();
       throw error;
+    } finally {
+      notifyListeners();
     }
   }
 
   Future<void> _addNewProduct(Product product) async {
-    final url = Uri.https(
-        "flutter-meal-app-99b13-default-rtdb.firebaseio.com", "/cart.json");
-
     _items.putIfAbsent(
         product.id,
         () => CartItem(
             id: product.id, title: product.title, price: product.price));
 
     try {
-      await http.patch(url, body: json.encode(_parseCartItemsToJson()));
+      await CartHttpHandler(body: _parseCartItemsToJson()).update();
     } catch (error) {
       _items.remove(product.id);
       throw error;
+    } finally {
+      notifyListeners();
     }
   }
 
@@ -153,20 +141,9 @@ class Cart with ChangeNotifier {
   }
 
   Future<void> clear() async {
-    final url = Uri.https(
-        "flutter-meal-app-99b13-default-rtdb.firebaseio.com", "/cart.json");
-
-    final deletedMap = _items;
+    await CartHttpHandler().clear();
     _items = {};
-
-    try {
-      await http.delete(url);
-    } on Exception catch (error) {
-      _items = deletedMap;
-      throw error;
-    } finally {
-      notifyListeners();
-    }
+    notifyListeners();
   }
 
   Future<void> undoLastAddition(Product product) async {
@@ -186,18 +163,10 @@ class Cart with ChangeNotifier {
   }
 
   Future<void> _deleteOneProductQuantity(Product product) async {
-    final url = Uri.https("flutter-meal-app-99b13-default-rtdb.firebaseio.com",
-        "/cart/${product.id}.json");
-
+    await CartHttpHandler(
+            resourceId: product.id, body: _items[product.id].toJSON())
+        .update();
     _items[product.id].deleteOne();
-
-    try {
-      await http.patch(url, body: json.encode(_items[product.id].toJSON()));
-    } on Exception catch (error) {
-      _items[product.id].quantity++;
-      throw error;
-    } finally {
-      notifyListeners();
-    }
+    notifyListeners();
   }
 }

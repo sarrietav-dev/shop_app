@@ -94,9 +94,9 @@ class _CartOverview extends StatelessWidget {
               builder: (_, orders, child) => TextButton(
                 onPressed: cart.items.isEmpty
                     ? null
-                    : () {
-                        orders.addOrder(cart);
-                        cart.clear();
+                    : () async {
+                        await orders.addOrder(cart);
+                        await cart.clear();
                       },
                 child: child,
                 style: ButtonStyle(foregroundColor:

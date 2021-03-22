@@ -38,7 +38,7 @@ class _CartPageState extends State<CartPage> {
         title: const Text("Your Cart"),
       ),
       body: _isLoading
-          ? CircularProgressIndicator()
+          ? Center(child: CircularProgressIndicator())
           : Consumer<Cart>(
               child: const SizedBox(
                 height: 10,

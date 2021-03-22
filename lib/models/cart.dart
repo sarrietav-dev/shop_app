@@ -134,9 +134,7 @@ class Cart with ChangeNotifier {
     _items.putIfAbsent(
         product.id,
         () => CartItem(
-            id: DateTime.now().toString(),
-            title: product.title,
-            price: product.price));
+            id: product.id, title: product.title, price: product.price));
 
     try {
       http.patch(url, body: json.encode(_parseCartItemsToJson()));
@@ -169,13 +167,35 @@ class Cart with ChangeNotifier {
     }
   }
 
-  void undoLastAddition(Product product) {
-    if (!_items.containsKey(product.id)) return;
-    if (_items[product.id].quantity > 1) {
-      _items[product.id].deleteOne();
+  Future<void> undoLastAddition(Product product) async {
+    final productLookup =
+        _items.values.firstWhere((element) => element.id == product.id);
+    if (productLookup == null) return;
+
+    final key =
+        _items.keys.firstWhere((element) => _items[element] == productLookup);
+
+    if (_items[key].quantity > 1) {
+      await _deleteOneProductQuantity(product);
     } else {
-      _items.remove(product.id);
+      this.removeItem(key);
     }
     notifyListeners();
+  }
+
+  Future<void> _deleteOneProductQuantity(Product product) async {
+    final url = Uri.https("flutter-meal-app-99b13-default-rtdb.firebaseio.com",
+        "/cart/${product.id}.json");
+
+    _items[product.id].deleteOne();
+
+    try {
+      await http.patch(url, body: json.encode(product.toJSON()));
+    } on Exception catch (e) {
+      _items[product.id].quantity++;
+      throw e;
+    } finally {
+      notifyListeners();
+    }
   }
 }

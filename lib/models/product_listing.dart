@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shop_app/http/product_listing_handler.dart';
 import 'package:shop_app/models/product.dart';
-import 'package:http/http.dart' as http;
 
 class ProductListing with ChangeNotifier {
   List<Product> _items = [];

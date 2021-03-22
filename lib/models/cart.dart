@@ -82,7 +82,6 @@ class Cart with ChangeNotifier {
 
   Future<void> removeItem(String key) async {
     await CartHttpHandler(resourceId: key).removeItem();
-    final removedItem = _items.remove(key);
     notifyListeners();
   }
 

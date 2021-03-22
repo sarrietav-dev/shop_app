@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:shop_app/http/http_request_handler.dart';
 import 'package:shop_app/http/url_handler.dart';
@@ -32,7 +33,10 @@ class ProductListingHTTPHandler implements HTTPRequestHandler {
 
   Future<http.Response> deleteProduct() async {
     _checkResourceId();
-    return await http.delete(urlHandler.getResourceUrl(resourceId));
+    final response = await http.delete(urlHandler.getResourceUrl(resourceId));
+
+    if (response.statusCode >= 400)
+      throw HttpException("Could not delete product");
   }
 
   void _checkResourceId() {

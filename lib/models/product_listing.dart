@@ -52,21 +52,8 @@ class ProductListing with ChangeNotifier {
     final response =
         await ProductListingHTTPHandler(resourceId: product.id).deleteProduct();
 
-    if (response.statusCode >= 400)
-      throw HttpException(message: "Could not delete product");
     _items.removeWhere((element) => product.id == element.id);
 
     notifyListeners();
-  }
-}
-
-class HttpException implements Exception {
-  final String message;
-
-  HttpException({this.message});
-
-  @override
-  String toString() {
-    return message;
   }
 }

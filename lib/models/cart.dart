@@ -192,7 +192,7 @@ class Cart with ChangeNotifier {
     _items[product.id].deleteOne();
 
     try {
-      await http.patch(url, body: json.encode(product.toJSON()));
+      await http.patch(url, body: json.encode(_items[product.id].toJSON()));
     } on Exception catch (error) {
       _items[product.id].quantity++;
       throw error;

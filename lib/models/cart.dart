@@ -83,8 +83,18 @@ class Cart with ChangeNotifier {
   }
 
   void removeItem(String key) {
-    _items.remove(key);
-    notifyListeners();
+    final url = Uri.https("flutter-meal-app-99b13-default-rtdb.firebaseio.com",
+        "/cart/$key.json");
+    final removedItem = _items.remove(key);
+
+    try {
+      http.delete(url);
+    } on Exception catch (error) {
+      _items[key] = removedItem;
+      throw error;
+    } finally {
+      notifyListeners();
+    }
   }
 
   void addItem(Product product) {

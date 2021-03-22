@@ -8,10 +8,8 @@ import 'package:shop_app/http/url_handler.dart';
 class CartHttpHandler extends HTTPRequestHandler with StatusChecker {
   @override
   URLHandler urlHandler;
-  final String resourceId;
-  final dynamic body;
 
-  CartHttpHandler({this.resourceId, this.body})
+  CartHttpHandler({resourceId, body})
       : super(resourceId: resourceId, body: body) {
     urlHandler = URLHandler(collectionName: "cart");
   }

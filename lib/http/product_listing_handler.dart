@@ -7,10 +7,8 @@ import 'package:http/http.dart' as http;
 
 class ProductListingHTTPHandler extends HTTPRequestHandler with StatusChecker {
   URLHandler urlHandler;
-  final String resourceId;
-  final dynamic body;
 
-  ProductListingHTTPHandler({this.body, this.resourceId})
+  ProductListingHTTPHandler({body, resourceId})
       : super(resourceId: resourceId, body: body) {
     urlHandler = URLHandler(collectionName: "products");
   }

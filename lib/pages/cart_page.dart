@@ -18,9 +18,14 @@ class _CartPageState extends State<CartPage> {
   @override
   void initState() {
     if (!_isFetched) {
-      Provider.of<Cart>(context, listen: false).fetchItems();
       setState(() {
-        _isFetched = true;
+        _isLoading = true;
+      });
+      Provider.of<Cart>(context, listen: false).fetchItems().then((value) {
+        setState(() {
+          _isLoading = false;
+          _isFetched = true;
+        });
       });
     }
     super.initState();
@@ -128,7 +133,8 @@ class _CartItem extends StatelessWidget {
     return _DismissibleCartItem(
       key: ValueKey(cartItem.id),
       onDismissed: (direction) async =>
-          await Provider.of<Cart>(context, listen: false).removeItem(cartItemKey),
+          await Provider.of<Cart>(context, listen: false)
+              .removeItem(cartItemKey),
       child: ProductListItem(
         cartItem: cartItem,
         hasMargin: true,

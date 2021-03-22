@@ -22,9 +22,14 @@ class Product with ChangeNotifier implements JSONParsable {
       this.isFavourite = false});
 
   Future<void> toggleFavouriteStatus() async {
-    await ProductListingHTTPHandler(resourceId: id, body: this.toJSON())
-        .updateProduct();
     isFavourite = !isFavourite;
+    try {
+      await ProductListingHTTPHandler(resourceId: id, body: toJSON())
+          .updateProduct();
+    } catch (error) {
+      isFavourite = !isFavourite;
+      throw error;
+    }
     notifyListeners();
   }
 

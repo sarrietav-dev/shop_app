@@ -27,15 +27,15 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
                   case ConnectionState.none:
                   case ConnectionState.waiting:
                   case ConnectionState.active:
-                    const Center(child: const CircularProgressIndicator());
-                    break;
+                    return const Center(
+                        child: const CircularProgressIndicator());
                   case ConnectionState.done:
-                    _ProductsGrid(
+                    return _ProductsGrid(
                       showFavourites: widget.showFavourites,
                     );
-                    break;
+                  default:
+                    return null;
                 }
-                return null;
               })),
     );
   }

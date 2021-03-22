@@ -43,11 +43,12 @@ class _OrdersPageState extends State<OrdersPage> {
                 case ConnectionState.none:
                 case ConnectionState.waiting:
                 case ConnectionState.active:
+                default:
                   return const Center(
                     child: const CircularProgressIndicator(),
                   );
+                
               }
-              return null;
             }));
   }
 }

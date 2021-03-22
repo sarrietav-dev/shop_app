@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:shop_app/http/product_listing_handler.dart';
 import 'package:shop_app/models/product.dart';
 import 'package:http/http.dart' as http;
 
@@ -12,10 +13,8 @@ class ProductListing with ChangeNotifier {
   }
 
   Future<void> addProduct(Product product) async {
-    final url = Uri.https(
-        "flutter-meal-app-99b13-default-rtdb.firebaseio.com", "/products.json");
-
-    final response = await http.post(url, body: json.encode(product.toJSON()));
+    final response =
+        await ProductListingHTTPHandler(body: product.toJSON()).addProduct();
 
     _items.add(ProductBuilder.existing(product)
         .setId(json.decode(response.body)["id"].toString())
@@ -24,9 +23,7 @@ class ProductListing with ChangeNotifier {
   }
 
   Future<void> fetchProducts() async {
-    final url = Uri.https(
-        "flutter-meal-app-99b13-default-rtdb.firebaseio.com", "/products.json");
-    final response = await http.get(url);
+    final response = await ProductListingHTTPHandler().fetchData();
     final data = json.decode(response.body) as Map<String, dynamic>;
     _setProductsFromJson(data);
   }
@@ -41,9 +38,9 @@ class ProductListing with ChangeNotifier {
   }
 
   Future<void> updateProduct(Product product) async {
-    final url = Uri.https("flutter-meal-app-99b13-default-rtdb.firebaseio.com",
-        "/products/${product.id}.json");
-    await http.patch(url, body: json.encode(product.toJSON()));
+    await ProductListingHTTPHandler(
+            resourceId: product.id, body: product.toJSON())
+        .updateProduct();
 
     final lastIndex = _items.indexWhere((element) => element.id == product.id);
     _items.removeWhere((element) => element.id == product.id);
@@ -52,9 +49,9 @@ class ProductListing with ChangeNotifier {
   }
 
   Future<void> deleteProduct(Product product) async {
-    final url = Uri.https("flutter-meal-app-99b13-default-rtdb.firebaseio.com",
-        "/products/${product.id}.json");
-    final response = await http.delete(url);
+    final response =
+        await ProductListingHTTPHandler(resourceId: product.id).deleteProduct();
+
     if (response.statusCode >= 400)
       throw HttpException(message: "Could not delete product");
     _items.removeWhere((element) => product.id == element.id);

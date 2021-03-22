@@ -28,7 +28,6 @@ class ProductListing with ChangeNotifier {
     _setProductsFromJson(data);
   }
 
-  // FIXME: Unhandled Exception: type 'String' is not a subtype of type 'Map<String, dynamic>'
   void _setProductsFromJson(Map<String, dynamic> data) {
     _items = [];
     data.forEach((key, value) {
@@ -49,8 +48,7 @@ class ProductListing with ChangeNotifier {
   }
 
   Future<void> deleteProduct(Product product) async {
-    final response =
-        await ProductListingHTTPHandler(resourceId: product.id).deleteProduct();
+    await ProductListingHTTPHandler(resourceId: product.id).deleteProduct();
 
     _items.removeWhere((element) => product.id == element.id);
 

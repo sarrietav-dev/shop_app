@@ -76,7 +76,7 @@ class Cart with ChangeNotifier {
   }
 
   void _setFetchedItems(Map<String, dynamic> data) {
-    Map<String, CartItem> _items = {};
+    _items = {};
     data.forEach((key, value) {
       _items[key] = CartItemBuilder.fromJson(value).build();
     });

@@ -35,8 +35,8 @@ class _OrdersPageState extends State<OrdersPage> {
     final orders = Provider.of<Orders>(context).orders;
     return Scaffold(
       body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
+          ? const Center(
+              child: const CircularProgressIndicator(),
             )
           : SingleChildScrollView(
               child: ExpansionPanelList(

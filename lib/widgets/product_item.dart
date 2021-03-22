@@ -46,8 +46,8 @@ class __ProductItemFooterState extends State<_ProductItemFooter>
     return GridTileBar(
       backgroundColor: Colors.black87,
       leading: _isFavouriteLoading
-          ? Center(
-              child: CircularProgressIndicator(),
+          ? const Center(
+              child: const CircularProgressIndicator(),
             )
           : IconButton(
               icon: Icon(
@@ -77,8 +77,8 @@ class __ProductItemFooterState extends State<_ProductItemFooter>
       ),
       trailing: Consumer<Cart>(
         builder: (context, cart, child) => _isCartLoading
-            ? Center(
-                child: CircularProgressIndicator(),
+            ? const Center(
+                child: const CircularProgressIndicator(),
               )
             : IconButton(
                 icon: Icon(
@@ -94,8 +94,8 @@ class __ProductItemFooterState extends State<_ProductItemFooter>
                     _isCartLoading = false;
                   });
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    duration: Duration(seconds: 2),
-                    content: Text("Item added to the cart!"),
+                    duration: const Duration(seconds: 2),
+                    content: const Text("Item added to the cart!"),
                     action: SnackBarAction(
                         label: "Undo",
                         onPressed: () async =>

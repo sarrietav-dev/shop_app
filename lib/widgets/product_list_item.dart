@@ -16,7 +16,7 @@ class ProductListItem extends StatelessWidget {
     return Card(
       elevation: 4,
       margin:
-          hasMargin ? EdgeInsets.symmetric(horizontal: 15, vertical: 4) : null,
+          hasMargin ? const EdgeInsets.symmetric(horizontal: 15, vertical: 4) : null,
       child: Padding(
         padding: const EdgeInsets.all(10),
         child: ListTile(

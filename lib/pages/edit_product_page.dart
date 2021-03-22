@@ -94,8 +94,8 @@ class _EditProductPageState extends State<EditProductPage> with ErrorDialog {
         ],
       ),
       body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
+          ? const Center(
+              child: const CircularProgressIndicator(),
             )
           : Padding(
               padding: const EdgeInsets.all(16),

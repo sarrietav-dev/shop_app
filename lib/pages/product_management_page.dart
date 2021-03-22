@@ -44,11 +44,11 @@ class _ProductManagementPageState extends State<ProductManagementPage>
         ],
       ),
       body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
+          ? const Center(
+              child: const CircularProgressIndicator(),
             )
           : Padding(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: Consumer<ProductListing>(
                   builder: (context, products, child) => ListView.builder(
                       itemCount: products.items.length,
@@ -58,7 +58,7 @@ class _ProductManagementPageState extends State<ProductManagementPage>
                                 product: products.items[index],
                                 useSpinner: useSpinner,
                               ),
-                              Divider(),
+                              const Divider(),
                             ],
                           ))),
             ),

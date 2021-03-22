@@ -41,7 +41,7 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
       body: RefreshIndicator(
         onRefresh: _refreshProducts,
         child: _isLoading
-            ? Center(child: CircularProgressIndicator())
+            ? const Center(child: const CircularProgressIndicator())
             : _ProductsGrid(
                 showFavourites: widget.showFavourites,
               ),

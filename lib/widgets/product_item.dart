@@ -40,6 +40,7 @@ class _ProductItemFooter extends StatefulWidget {
 class __ProductItemFooterState extends State<_ProductItemFooter>
     with ErrorDialog {
   bool _isFavouriteLoading = false;
+  bool _isCartLoading = false;
 
   Widget build(BuildContext context) {
     return GridTileBar(
@@ -75,21 +76,32 @@ class __ProductItemFooterState extends State<_ProductItemFooter>
         textAlign: TextAlign.center,
       ),
       trailing: Consumer<Cart>(
-        builder: (context, cart, child) => IconButton(
-            icon: Icon(
-              Icons.add_shopping_cart,
-              color: Theme.of(context).accentColor,
-            ),
-            onPressed: () async {
-              await cart.addItem(widget.product);
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                duration: Duration(seconds: 2),
-                content: Text("Item added to the cart!"),
-                action: SnackBarAction(
-                    label: "Undo",
-                    onPressed: () async => await cart.undoLastAddition(widget.product)),
-              ));
-            }),
+        builder: (context, cart, child) => _isCartLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : IconButton(
+                icon: Icon(
+                  Icons.add_shopping_cart,
+                  color: Theme.of(context).accentColor,
+                ),
+                onPressed: () async {
+                  setState(() {
+                    _isCartLoading = true;
+                  });
+                  await cart.addItem(widget.product);
+                  setState(() {
+                    _isCartLoading = false;
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    duration: Duration(seconds: 2),
+                    content: Text("Item added to the cart!"),
+                    action: SnackBarAction(
+                        label: "Undo",
+                        onPressed: () async =>
+                            await cart.undoLastAddition(widget.product)),
+                  ));
+                }),
       ),
     );
   }

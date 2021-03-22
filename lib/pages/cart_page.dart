@@ -127,8 +127,8 @@ class _CartItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return _DismissibleCartItem(
       key: ValueKey(cartItem.id),
-      onDismissed: (direction) =>
-          Provider.of<Cart>(context, listen: false).removeItem(cartItemKey),
+      onDismissed: (direction) async =>
+          await Provider.of<Cart>(context, listen: false).removeItem(cartItemKey),
       child: ProductListItem(
         cartItem: cartItem,
         hasMargin: true,

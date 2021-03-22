@@ -80,14 +80,14 @@ class __ProductItemFooterState extends State<_ProductItemFooter>
               Icons.add_shopping_cart,
               color: Theme.of(context).accentColor,
             ),
-            onPressed: () {
-              cart.addItem(widget.product);
+            onPressed: () async {
+              await cart.addItem(widget.product);
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 duration: Duration(seconds: 2),
                 content: Text("Item added to the cart!"),
                 action: SnackBarAction(
                     label: "Undo",
-                    onPressed: () => cart.undoLastAddition(widget.product)),
+                    onPressed: () async => await cart.undoLastAddition(widget.product)),
               ));
             }),
       ),

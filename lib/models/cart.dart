@@ -70,11 +70,13 @@ class Cart with ChangeNotifier {
 
   Future<void> fetchItems() async {
     final response = await CartHttpHandler().fetchData();
-    _setFetchedItems(json.decode(response.body) as Map<String, dynamic>);
+    final data = await json.decode(response.body);
+    _setFetchedItems(data as Map<String, dynamic>);
   }
 
   void _setFetchedItems(Map<String, dynamic> data) {
     _items = {};
+    if (data == null) return;
     data.forEach((key, value) {
       _items[key] = CartItemBuilder.fromJson(value).build();
     });
@@ -140,7 +142,7 @@ class Cart with ChangeNotifier {
   }
 
   Future<void> clear() async {
-    await CartHttpHandler().clear();
+    await CartHttpHandler(body: {}).update();
     _items = {};
     notifyListeners();
   }

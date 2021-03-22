@@ -34,10 +34,4 @@ class CartHttpHandler extends HTTPRequestHandler with StatusChecker {
     checkStatus(response);
     return response;
   }
-
-  Future<http.Response> clear() async {
-    final response = await http.delete(urlHandler.url);
-    checkStatus(response);
-    return response;
-  }
 }

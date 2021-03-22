@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:shop_app/http/product_listing_handler.dart';
 import 'package:shop_app/models/interfaces/json_parsable.dart';
 import 'package:http/http.dart' as http;
 
@@ -21,15 +22,9 @@ class Product with ChangeNotifier implements JSONParsable {
       this.isFavourite = false});
 
   Future<void> toggleFavouriteStatus() async {
-    final url = Uri.https("flutter-meal-app-99b13-default-rtdb.firebaseio.com",
-        "/products/$id.json");
+    await ProductListingHTTPHandler(resourceId: id, body: this.toJSON())
+        .updateProduct();
     isFavourite = !isFavourite;
-    try {
-      await http.patch(url, body: json.encode(this.toJSON()));
-    } catch (error) {
-      isFavourite = !isFavourite;
-      throw error;
-    }
     notifyListeners();
   }
 

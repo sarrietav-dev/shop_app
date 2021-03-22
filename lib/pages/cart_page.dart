@@ -4,8 +4,26 @@ import 'package:shop_app/models/cart.dart';
 import 'package:shop_app/models/orders.dart';
 import 'package:shop_app/widgets/product_list_item.dart';
 
-class CartPage extends StatelessWidget {
+class CartPage extends StatefulWidget {
   static const routeName = "/cart";
+
+  @override
+  _CartPageState createState() => _CartPageState();
+}
+
+class _CartPageState extends State<CartPage> {
+  bool _isFetched = false;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    if (!_isFetched) {
+      Provider.of<Cart>(context, listen: false).fetchItems();
+      setState(() {
+        _isFetched = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,24 +31,26 @@ class CartPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Your Cart"),
       ),
-      body: Consumer<Cart>(
-        child: const SizedBox(
-          height: 10,
-        ),
-        builder: (_, cart, child) => Column(
-          children: [
-            _CartOverview(cart: cart),
-            child,
-            Expanded(
-                child: ListView.builder(
-                    itemCount: cart.productCount,
-                    itemBuilder: (context, index) => _CartItem(
-                          cartItemKey: cart.items.keys.toList()[index],
-                          cartItem: cart.items.values.toList()[index],
-                        )))
-          ],
-        ),
-      ),
+      body: _isLoading
+          ? CircularProgressIndicator()
+          : Consumer<Cart>(
+              child: const SizedBox(
+                height: 10,
+              ),
+              builder: (_, cart, child) => Column(
+                children: [
+                  _CartOverview(cart: cart),
+                  child,
+                  Expanded(
+                      child: ListView.builder(
+                          itemCount: cart.productCount,
+                          itemBuilder: (context, index) => _CartItem(
+                                cartItemKey: cart.items.keys.toList()[index],
+                                cartItem: cart.items.values.toList()[index],
+                              )))
+                ],
+              ),
+            ),
     );
   }
 }

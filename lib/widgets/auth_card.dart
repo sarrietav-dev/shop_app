@@ -29,11 +29,14 @@ class _AuthCardState extends State<AuthCard> {
     setState(() {
       _isLoading = true;
     });
-    
-    if (_authMode == AuthMode.Login) {
-      // Log user in
-    } else {
-      // Sign user up
+
+    switch (_authMode) {
+      case AuthMode.Signup:
+        // TODO: Handle this case.
+        break;
+      case AuthMode.Login:
+        // TODO: Handle this case.
+        break;
     }
 
     setState(() {
@@ -42,14 +45,17 @@ class _AuthCardState extends State<AuthCard> {
   }
 
   void _switchAuthMode() {
-    if (_authMode == AuthMode.Login) {
-      setState(() {
-        _authMode = AuthMode.Signup;
-      });
-    } else {
-      setState(() {
-        _authMode = AuthMode.Login;
-      });
+    switch (_authMode) {
+      case AuthMode.Signup:
+        setState(() {
+          _authMode = AuthMode.Login;
+        });
+        break;
+      case AuthMode.Login:
+        setState(() {
+          _authMode = AuthMode.Signup;
+        });
+        break;
     }
   }
 

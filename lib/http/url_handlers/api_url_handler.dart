@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:shop_app/http/url_handler.dart';
+import 'package:shop_app/http/url_handlers/url_handler.dart';
 
 class ApiUrlHandler extends UrlHandler {
   ApiUrlHandler({@required collectionName})

@@ -2,15 +2,15 @@ import 'dart:convert';
 
 import 'package:shop_app/http/check_status.dart';
 import 'package:shop_app/http/http_request_handler.dart';
-import 'package:shop_app/http/url_handler.dart';
+import 'package:shop_app/http/api_url_handler.dart';
 import 'package:http/http.dart' as http;
 
 class ProductListingHTTPHandler extends HTTPRequestHandler with StatusChecker {
-  URLHandler urlHandler;
+  ApiUrlHandler urlHandler;
 
   ProductListingHTTPHandler({body, resourceId})
       : super(resourceId: resourceId, body: body) {
-    urlHandler = URLHandler(collectionName: "products");
+    urlHandler = ApiUrlHandler(collectionName: "products");
   }
 
   @override

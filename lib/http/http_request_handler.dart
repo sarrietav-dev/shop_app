@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
-import 'package:shop_app/http/url_handler.dart';
+import 'package:shop_app/http/api_url_handler.dart';
 
 abstract class HTTPRequestHandler {
-  URLHandler urlHandler;
+  ApiUrlHandler urlHandler;
 
   @protected
   final String resourceId;

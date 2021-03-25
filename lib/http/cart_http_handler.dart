@@ -3,15 +3,15 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shop_app/http/check_status.dart';
 import 'package:shop_app/http/http_request_handler.dart';
-import 'package:shop_app/http/url_handler.dart';
+import 'package:shop_app/http/api_url_handler.dart';
 
 class CartHttpHandler extends HTTPRequestHandler with StatusChecker {
   @override
-  URLHandler urlHandler;
+  ApiUrlHandler urlHandler;
 
   CartHttpHandler({resourceId, body})
       : super(resourceId: resourceId, body: body) {
-    urlHandler = URLHandler(collectionName: "cart");
+    urlHandler = ApiUrlHandler(collectionName: "cart");
   }
 
   @override

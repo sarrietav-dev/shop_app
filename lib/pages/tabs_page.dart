@@ -9,6 +9,7 @@ import 'package:shop_app/pages/products_overview_page.dart';
 import 'package:shop_app/widgets/badge.dart';
 
 class TabsPage extends StatefulWidget {
+  static const routeName = "/home";
   @override
   _TabsPageState createState() => _TabsPageState();
 }

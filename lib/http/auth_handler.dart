@@ -7,8 +7,8 @@ import 'package:shop_app/utils/auth_info.dart';
 import 'package:shop_app/utils/credentials.dart';
 
 class AuthHandler with StatusChecker {
-  final url = Uri.https("identitytoolkit.googleapis.com", "/v1/accounts:signUp",
-      {"key": env["FIREBASE_API_KEY"]});
+  final url = Uri.https(
+      "identitytoolkit.googleapis.com", "", {"key": env["FIREBASE_API_KEY"]});
 
   final Credential credential;
 
@@ -18,6 +18,7 @@ class AuthHandler with StatusChecker {
     final response = await http.post(url.replace(path: "/v1/accounts:signUp"),
         body: json.encode(
             credential.toJSON..putIfAbsent("returnSecureToken", () => true)));
+    checkStatus(response);
 
     final data = json.decode(response.body);
 
@@ -32,6 +33,7 @@ class AuthHandler with StatusChecker {
         url.replace(path: "/v1/accounts:signInWithPassword"),
         body: json.encode(
             credential.toJSON..putIfAbsent("returnSecureToken", () => true)));
+    checkStatus(response);
 
     final data = json.decode(response.body);
 

@@ -87,7 +87,7 @@ class _AuthCardState extends State<AuthCard> {
                     }
                     return null;
                   },
-                  onSaved: _credential.setUsername,
+                  onSaved: _credential.setEmail,
                 ),
                 TextFormField(
                   decoration: const InputDecoration(labelText: 'Password'),

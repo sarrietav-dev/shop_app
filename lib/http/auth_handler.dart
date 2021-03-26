@@ -6,7 +6,7 @@ import 'package:shop_app/utils/credentials.dart';
 
 class AuthHandler with StatusChecker {
   final url = Uri.https("identitytoolkit.googleapis.com",
-      "/v1/accounts:signInWithCustomToken?key=${String.fromEnvironment('FIREBASE_API_KEY')}");
+      "/v1/accounts:signUp?key=${String.fromEnvironment('FIREBASE_API_KEY')}");
 
   final Credential credential;
 

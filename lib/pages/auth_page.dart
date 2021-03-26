@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:shop_app/widgets/auth_card.dart';
 
-
 class AuthPage extends StatelessWidget {
   static const routeName = '/auth';
 
@@ -62,9 +61,8 @@ class _Header extends StatelessWidget {
     return Flexible(
       child: Container(
         margin: const EdgeInsets.only(bottom: 20.0),
-        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 94.0),
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 74.0),
         transform: Matrix4.rotationZ(-8 * pi / 180)..translate(-10.0),
-        // ..translate(-10.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           color: Colors.deepOrange.shade900,

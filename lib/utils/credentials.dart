@@ -1,23 +1,23 @@
 import 'package:flutter/foundation.dart';
 
 class Credential {
-  final String username;
+  final String email;
   final String password;
 
-  Credential({@required this.username, @required this.password});
+  Credential({@required this.email, @required this.password});
 
   Map<String, dynamic> get toJSON => {
-        "username": username,
+        "email": email,
         "password": password,
       };
 }
 
 class CredentialBuilder {
-  String username;
+  String email;
   String password;
 
-  CredentialBuilder setUsername(String username) {
-    this.username = username;
+  CredentialBuilder setEmail(String email) {
+    this.email = email;
     return this;
   }
 
@@ -27,6 +27,6 @@ class CredentialBuilder {
   }
 
   Credential build() {
-    return Credential(username: username, password: password);
+    return Credential(email: email, password: password);
   }
 }

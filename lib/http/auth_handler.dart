@@ -18,7 +18,9 @@ class AuthHandler with StatusChecker {
     final response = await http.post(url.replace(path: "/v1/accounts:signUp"),
         body: json.encode(
             credential.toJSON..putIfAbsent("returnSecureToken", () => true)));
+
     final data = json.decode(response.body);
+
     return AuthInfo(
         idToken: data["idToken"],
         expiresIn: data["expiresIn"],
@@ -30,7 +32,9 @@ class AuthHandler with StatusChecker {
         url.replace(path: "/v1/accounts:signInWithPassword"),
         body: json.encode(
             credential.toJSON..putIfAbsent("returnSecureToken", () => true)));
+
     final data = json.decode(response.body);
+
     return AuthInfo(
         idToken: data["idToken"],
         expiresIn: data["expiresIn"],

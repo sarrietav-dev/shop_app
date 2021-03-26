@@ -3,13 +3,12 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shop_app/http/orders_http_handler.dart';
 import 'package:shop_app/models/cart.dart';
-import 'package:shop_app/models/interfaces/json_parsable.dart';
 
 mixin Expandable {
   bool isExpanded = false;
 }
 
-class Order with Expandable implements JSONParsable {
+class Order with Expandable {
   final String id;
   final double amount;
   final List<CartItem> products;
@@ -21,15 +20,12 @@ class Order with Expandable implements JSONParsable {
       @required this.products,
       @required this.dateTime});
 
-  @override
-  Map<String, Object> toJSON() {
-    return {
-      "id": this.id,
-      "amount": this.amount,
-      "products": products.map((e) => e.toJSON()).toList(),
-      "dateTime": this.dateTime.toString(),
-    };
-  }
+  get toJSON => {
+        "id": this.id,
+        "amount": this.amount,
+        "products": products.map((e) => e.toJSON).toList(),
+        "dateTime": this.dateTime.toString(),
+      };
 }
 
 class OrderBuilder {
@@ -81,7 +77,7 @@ class Orders with ChangeNotifier {
         dateTime: DateTime.now()));
 
     try {
-      await OrdersHttpHandler(body: _orders.last.toJSON()).addOrder();
+      await OrdersHttpHandler(body: _orders.last.toJSON).addOrder();
     } on Exception catch (e) {
       _orders.removeLast();
       throw e;

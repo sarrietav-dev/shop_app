@@ -2,10 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:shop_app/http/cart_http_handler.dart';
-import 'package:shop_app/models/interfaces/json_parsable.dart';
 import 'package:shop_app/models/product.dart';
 
-class CartItem implements JSONParsable {
+class CartItem {
   final String id;
   final String title;
   int quantity;
@@ -21,15 +20,12 @@ class CartItem implements JSONParsable {
   double get totalPrice => price * quantity;
   void deleteOne() => quantity--;
 
-  @override
-  Map<String, Object> toJSON() {
-    return {
-      "id": id,
-      "title": title,
-      "quantity": quantity,
-      "price": price,
-    };
-  }
+  get toJSON => {
+        "id": id,
+        "title": title,
+        "quantity": quantity,
+        "price": price,
+      };
 }
 
 class CartItemBuilder {
@@ -109,7 +105,7 @@ class Cart with ChangeNotifier {
             quantity: value.quantity + 1));
 
     try {
-      await CartHttpHandler(body: _parseCartItemsToJson()).update();
+      await CartHttpHandler(body: _cartItemsToJson).update();
     } catch (error) {
       _items[product.id].deleteOne();
       throw error;
@@ -125,7 +121,7 @@ class Cart with ChangeNotifier {
             id: product.id, title: product.title, price: product.price));
 
     try {
-      await CartHttpHandler(body: _parseCartItemsToJson()).update();
+      await CartHttpHandler(body: _cartItemsToJson).update();
     } catch (error) {
       _items.remove(product.id);
       throw error;
@@ -134,10 +130,10 @@ class Cart with ChangeNotifier {
     }
   }
 
-  Map<String, Map<String, dynamic>> _parseCartItemsToJson() {
+  get _cartItemsToJson {
     Map<String, Map<String, dynamic>> parsedData = {};
     _items.forEach((key, value) {
-      parsedData[key] = value.toJSON();
+      parsedData[key] = value.toJSON;
     });
     return parsedData;
   }
@@ -166,7 +162,7 @@ class Cart with ChangeNotifier {
 
   Future<void> _deleteOneProductQuantity(Product product) async {
     await CartHttpHandler(
-            resourceId: product.id, body: _items[product.id].toJSON())
+            resourceId: product.id, body: _items[product.id].toJSON)
         .update();
     _items[product.id].deleteOne();
     notifyListeners();

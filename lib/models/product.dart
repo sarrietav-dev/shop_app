@@ -1,11 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:shop_app/http/product_listing_handler.dart';
-import 'package:shop_app/models/interfaces/json_parsable.dart';
-import 'package:http/http.dart' as http;
 
-class Product with ChangeNotifier implements JSONParsable {
+class Product with ChangeNotifier {
   final String id;
   final String title;
   final String description;
@@ -24,7 +20,7 @@ class Product with ChangeNotifier implements JSONParsable {
   Future<void> toggleFavouriteStatus() async {
     isFavourite = !isFavourite;
     try {
-      await ProductListingHTTPHandler(resourceId: id, body: toJSON())
+      await ProductListingHTTPHandler(resourceId: id, body: toJSON)
           .updateProduct();
     } catch (error) {
       isFavourite = !isFavourite;
@@ -33,15 +29,13 @@ class Product with ChangeNotifier implements JSONParsable {
     notifyListeners();
   }
 
-  Map<String, Object> toJSON() {
-    return {
-      "title": this.title,
-      "description": this.description,
-      "price": this.price,
-      "imageUrl": this.imageUrl,
-      "isFavourite": this.isFavourite,
-    };
-  }
+  get toJSON => {
+        "title": this.title,
+        "description": this.description,
+        "price": this.price,
+        "imageUrl": this.imageUrl,
+        "isFavourite": this.isFavourite,
+      };
 
   @override
   String toString() {

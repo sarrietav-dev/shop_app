@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shop_app/models/auth.dart';
+import 'package:shop_app/utils/credentials.dart';
 
 enum AuthMode { Signup, Login }
 
@@ -14,14 +17,11 @@ class AuthCard extends StatefulWidget {
 class _AuthCardState extends State<AuthCard> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.Login;
-  Map<String, String> _authData = {
-    'email': '',
-    'password': '',
-  };
+  CredentialBuilder _credential = CredentialBuilder();
   var _isLoading = false;
   final _passwordController = TextEditingController();
 
-  void _submit() {
+  void _submit() async {
     if (!_formKey.currentState.validate()) return; // Invalid!
 
     _formKey.currentState.save();
@@ -32,7 +32,7 @@ class _AuthCardState extends State<AuthCard> {
 
     switch (_authMode) {
       case AuthMode.Signup:
-        // TODO: Handle this case.
+        await Provider.of<Auth>(context, listen: false).signup(_credential.build());
         break;
       case AuthMode.Login:
         // TODO: Handle this case.
@@ -87,9 +87,7 @@ class _AuthCardState extends State<AuthCard> {
                     }
                     return null;
                   },
-                  onSaved: (value) {
-                    _authData['email'] = value;
-                  },
+                  onSaved: _credential.setUsername,
                 ),
                 TextFormField(
                   decoration: const InputDecoration(labelText: 'Password'),
@@ -100,9 +98,7 @@ class _AuthCardState extends State<AuthCard> {
                       return 'Password is too short!';
                     return null;
                   },
-                  onSaved: (value) {
-                    _authData['password'] = value;
-                  },
+                  onSaved: _credential.setPassword,
                 ),
                 if (_authMode == AuthMode.Signup)
                   TextFormField(

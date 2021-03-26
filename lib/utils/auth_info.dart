@@ -9,4 +9,9 @@ class AuthInfo {
       {@required this.idToken,
       @required this.expiresIn,
       @required this.localId});
+
+  @override
+  String toString() {
+    return "idToken: $idToken, expiresIn: $expiresIn, localId: $localId";
+  }
 }

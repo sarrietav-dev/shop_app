@@ -10,4 +10,8 @@ class Auth with ChangeNotifier {
   Future<void> signup(Credential credential) async {
     return await AuthHandler(credential).signup();
   }
+
+  Future<void> login(Credential credential) async {
+    return await AuthHandler(credential).login();
+  }
 }

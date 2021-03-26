@@ -32,10 +32,12 @@ class _AuthCardState extends State<AuthCard> {
 
     switch (_authMode) {
       case AuthMode.Signup:
-        await Provider.of<Auth>(context, listen: false).signup(_credential.build());
+        await Provider.of<Auth>(context, listen: false)
+            .signup(_credential.build());
         break;
       case AuthMode.Login:
-        // TODO: Handle this case.
+        await Provider.of<Auth>(context, listen: false)
+            .login(_credential.build());
         break;
     }
 

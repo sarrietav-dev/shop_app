@@ -14,7 +14,13 @@ class AuthHandler with StatusChecker {
   AuthHandler(this.credential);
 
   Future<http.Response> signup() async {
-    return await http.post(url,
+    return await http.post(url.replace(path: "/v1/accounts:signUp"),
+        body: json.encode(
+            credential.toJSON..putIfAbsent("returnSecureToken", () => true)));
+  }
+
+  Future<void> login() async {
+    return await http.post(url.replace(path: "/v1/accounts:signInWithPassword"),
         body: json.encode(
             credential.toJSON..putIfAbsent("returnSecureToken", () => true)));
   }

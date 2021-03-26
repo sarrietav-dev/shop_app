@@ -13,6 +13,8 @@ class AuthHandler with StatusChecker {
   AuthHandler(this.credential);
 
   Future<http.Response> signup() async {
-    return await http.post(url, body: json.encode(credential.toJSON));
+    return await http.post(url,
+        body: json.encode(
+            credential.toJSON..putIfAbsent("returnSecureToken", () => true)));
   }
 }

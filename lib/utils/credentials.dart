@@ -11,3 +11,22 @@ class Credential {
         "password": password,
       };
 }
+
+class CredentialBuilder {
+  String username;
+  String password;
+
+  CredentialBuilder setUsername(String username) {
+    this.username = username;
+    return this;
+  }
+
+  CredentialBuilder setPassword(String password) {
+    this.password = password;
+    return this;
+  }
+
+  Credential build() {
+    return Credential(username: username, password: password);
+  }
+}

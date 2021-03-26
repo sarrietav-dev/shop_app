@@ -6,7 +6,7 @@ class Credential {
 
   Credential({@required this.username, @required this.password});
 
-  get toJSON => {
+  Map<String, dynamic> get toJSON => {
         "username": username,
         "password": password,
       };

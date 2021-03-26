@@ -57,11 +57,8 @@ class Cart with ChangeNotifier {
   int get productCount => _items.length;
 
   double get totalAmount {
-    double total = 0;
-    _items.forEach((key, value) {
-      total += value.totalPrice;
-    });
-    return total;
+    return _items.values.fold(
+        0, (previousValue, element) => previousValue + element.totalPrice);
   }
 
   Future<void> fetchItems() async {
@@ -71,11 +68,9 @@ class Cart with ChangeNotifier {
   }
 
   void _setFetchedItems(Map<String, dynamic> data) {
-    _items = {};
     if (data == null) return;
-    data.forEach((key, value) {
-      _items[key] = CartItemBuilder.fromJson(value).build();
-    });
+    _items = data.map(
+        (key, value) => MapEntry(key, CartItemBuilder.fromJson(value).build()));
   }
 
   Future<void> removeItem(String key) async {

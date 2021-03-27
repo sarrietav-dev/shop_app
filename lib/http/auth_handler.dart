@@ -21,7 +21,6 @@ class AuthHandler with StatusChecker {
     checkStatus(response);
 
     final data = json.decode(response.body);
-    checkErrorInData(data);
 
     return AuthInfo(
         idToken: data["idToken"],
@@ -37,7 +36,6 @@ class AuthHandler with StatusChecker {
     checkStatus(response);
 
     final data = json.decode(response.body);
-    checkErrorInData(data);
 
     return AuthInfo(
         idToken: data["idToken"],

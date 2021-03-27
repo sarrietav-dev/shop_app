@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -6,11 +7,12 @@ import 'package:http/http.dart';
 mixin StatusChecker {
   @protected
   void checkStatus(Response response) {
-    if (response.statusCode >= 400) throw HttpException("Something went wrong");
-  }
-
-  @protected
-  void checkErrorInData(Map<String, dynamic> data) {
-    if (data.containsKey("error")) throw HttpException(data["message"]);
+    print(response.body);
+    if (response.statusCode >= 400) {
+      final data = json.decode(response.body);
+      if (data.containsKey("error"))
+        throw HttpException(data["error"]["message"]);
+      throw HttpException("Something went wrong");
+    }
   }
 }

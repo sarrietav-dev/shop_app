@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:shop_app/models/orders.dart';
 import 'package:intl/intl.dart';
 import 'package:shop_app/widgets/product_list_item.dart';
-import 'package:shop_app/http/orders_http_handler.dart';
 
 class OrdersPage extends StatefulWidget {
   @override
@@ -11,45 +10,53 @@ class OrdersPage extends StatefulWidget {
 }
 
 class _OrdersPageState extends State<OrdersPage> {
+  bool _isFetched = false;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    if (!_isFetched) {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<Orders>(context, listen: false).fetchData().then((value) {
+        setState(() {
+          _isFetched = true;
+          _isLoading = false;
+        });
+      });
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: FutureBuilder(
-            future: OrdersHttpHandler().fetchData(),
-            builder: (context, snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.done:
-                  return SingleChildScrollView(
-                    child: Consumer<Orders>(
-                      builder: (context, orders, child) => ExpansionPanelList(
-                          expansionCallback: (index, isExpanded) {
-                            setState(() {
-                              orders.orders[index].isExpanded = !isExpanded;
-                            });
-                          },
-                          children: orders.orders
-                              .map<ExpansionPanel>((order) => ExpansionPanel(
-                                  isExpanded: order.isExpanded,
-                                  headerBuilder: (context, isExpanded) =>
-                                      _ExpansionPanelHeader(
-                                        order: order,
-                                      ),
-                                  body: _ExpansionPanelBody(
+        body: _isLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : SingleChildScrollView(
+                child: Consumer<Orders>(
+                  builder: (context, orders, child) => ExpansionPanelList(
+                      expansionCallback: (index, isExpanded) {
+                        setState(() {
+                          orders.orders[index].isExpanded = !isExpanded;
+                        });
+                      },
+                      children: orders.orders
+                          .map<ExpansionPanel>((order) => ExpansionPanel(
+                              isExpanded: order.isExpanded,
+                              headerBuilder: (context, isExpanded) =>
+                                  _ExpansionPanelHeader(
                                     order: order,
-                                  )))
-                              .toList()),
-                    ),
-                  );
-                case ConnectionState.none:
-                case ConnectionState.waiting:
-                case ConnectionState.active:
-                default:
-                  return const Center(
-                    child: const CircularProgressIndicator(),
-                  );
-                
-              }
-            }));
+                                  ),
+                              body: _ExpansionPanelBody(
+                                order: order,
+                              )))
+                          .toList()),
+                ),
+              ));
   }
 }
 

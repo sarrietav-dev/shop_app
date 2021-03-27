@@ -38,7 +38,7 @@ class OrderBuilder {
     id = data["id"];
     amount = data["amount"];
     dateTime = DateTime.parse(data["dateTime"]);
-    products = (data["products"] as List<Map<String, dynamic>>)
+    products = (data["products"] as List<dynamic>)
         .map((e) => CartItemBuilder.fromJson(e).build())
         .toList();
   }
@@ -63,10 +63,13 @@ class Orders with ChangeNotifier {
     notifyListeners();
   }
 
-  set _setOrders(List<Map<String, dynamic>> data) {
+  set _setOrders(Map<String, dynamic> data) {
     _orders = [];
     if (data == null) return;
-    _orders = data.map((e) => OrderBuilder.json(e).build()).toList();
+    data.forEach((key, value) {
+      value["id"] = key;
+      _orders.add(OrderBuilder.json(value).build());
+    });
   }
 
   Future<void> addOrder(Cart order) async {

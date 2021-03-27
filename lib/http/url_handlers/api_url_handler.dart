@@ -1,17 +1,24 @@
 import 'package:flutter/foundation.dart';
 
-class ApiUrlHandler {
+class ApiUrlHandler extends ChangeNotifier {
   @protected
   static const String baseUrl =
       "flutter-meal-app-99b13-default-rtdb.firebaseio.com";
   @protected
   final String collectionName;
+  static String token = "";
 
   ApiUrlHandler({@required this.collectionName});
 
-  get url => Uri.https(baseUrl, "/$collectionName.json");
+  get url {
+    return Uri.https(baseUrl, "/$collectionName.json", _tokenUrlArg);
+  }
 
   Uri getResourceUrl(String resourceId) {
-    return Uri.https(baseUrl, "$collectionName/$resourceId.json");
+    return Uri.https(baseUrl, "$collectionName/$resourceId.json", _tokenUrlArg);
   }
+
+  static Map<String, String> get _tokenUrlArg => {
+        "auth": ApiUrlHandler.token,
+      };
 }

@@ -30,22 +30,23 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => Orders()),
         ChangeNotifierProvider(create: (_) => Auth()),
       ],
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.purple,
-          accentColor: Colors.deepOrange,
-          fontFamily: "Lato",
+      child: Consumer<Auth>(
+        builder: (context, auth, child) => MaterialApp(
+          title: 'Flutter Demo',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            primarySwatch: Colors.purple,
+            accentColor: Colors.deepOrange,
+            fontFamily: "Lato",
+          ),
+          routes: {
+            "/": (_) => auth.authInfo.isAuth ? TabsPage() : AuthPage(),
+            ProductDetailPage.routeName: (_) => ProductDetailPage(),
+            CartPage.routeName: (_) => CartPage(),
+            ProductManagementPage.routeName: (_) => ProductManagementPage(),
+            EditProductPage.routeName: (_) => EditProductPage(),
+          },
         ),
-        routes: {
-          "/": (_) => AuthPage(),
-          TabsPage.routeName: (_) => TabsPage(),
-          ProductDetailPage.routeName: (_) => ProductDetailPage(),
-          CartPage.routeName: (_) => CartPage(),
-          ProductManagementPage.routeName: (_) => ProductManagementPage(),
-          EditProductPage.routeName: (_) => EditProductPage(),
-        },
       ),
     );
   }

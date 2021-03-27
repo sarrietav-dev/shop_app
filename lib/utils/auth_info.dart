@@ -2,13 +2,17 @@ import 'package:flutter/foundation.dart';
 
 class AuthInfo {
   final String idToken;
-  final String expiresIn;
+  final DateTime expiresIn;
   final String localId;
 
-  AuthInfo(
-      {@required this.idToken,
-      @required this.expiresIn,
-      @required this.localId});
+  AuthInfo({this.idToken, this.expiresIn, this.localId});
+
+  bool get isAuth {
+    if (idToken != null &&
+        expiresIn.isAfter(DateTime.now()) &&
+        expiresIn != null) return true;
+    return false;
+  }
 
   @override
   String toString() {

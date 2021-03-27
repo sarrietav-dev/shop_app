@@ -22,10 +22,7 @@ class AuthHandler with StatusChecker {
 
     final data = json.decode(response.body);
 
-    return AuthInfo(
-        idToken: data["idToken"],
-        expiresIn: data["expiresIn"],
-        localId: data["localId"]);
+    return _parseData(data);
   }
 
   Future<AuthInfo> login() async {
@@ -37,9 +34,14 @@ class AuthHandler with StatusChecker {
 
     final data = json.decode(response.body);
 
+    return _parseData(data);
+  }
+
+  AuthInfo _parseData(Map<String, dynamic> data) {
     return AuthInfo(
         idToken: data["idToken"],
-        expiresIn: data["expiresIn"],
+        expiresIn:
+            DateTime.now().add(Duration(seconds: int.parse(data["expiresIn"]))),
         localId: data["localId"]);
   }
 }

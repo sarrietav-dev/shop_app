@@ -68,6 +68,7 @@ class Cart with ChangeNotifier {
   }
 
   void _setFetchedItems(Map<String, dynamic> data) {
+    _items = {};
     if (data == null) return;
     _items = data.map(
         (key, value) => MapEntry(key, CartItemBuilder.fromJson(value).build()));
@@ -134,7 +135,7 @@ class Cart with ChangeNotifier {
   }
 
   Future<void> clear() async {
-    await CartHttpHandler(body: {}).update();
+    await CartHttpHandler().clear();
     _items = {};
     notifyListeners();
   }

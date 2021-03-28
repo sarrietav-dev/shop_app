@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:shop_app/http/api_handlers/favourites_http_handler.dart';
 import 'package:shop_app/http/api_handlers/product_listing_handler.dart';
 
 class Product with ChangeNotifier {
@@ -7,7 +8,7 @@ class Product with ChangeNotifier {
   final String description;
   final double price;
   final String imageUrl;
-  bool isFavourite;
+  UserFavouriteData isFavourite;
 
   Product(
       {@required this.id,
@@ -15,17 +16,10 @@ class Product with ChangeNotifier {
       @required this.description,
       @required this.price,
       @required this.imageUrl,
-      this.isFavourite = false});
+      this.isFavourite});
 
   Future<void> toggleFavouriteStatus() async {
-    isFavourite = !isFavourite;
-    try {
-      await ProductListingHTTPHandler(resourceId: id, body: toJSON)
-          .updateProduct();
-    } catch (error) {
-      isFavourite = !isFavourite;
-      throw error;
-    }
+    await isFavourite.toggleFavouriteStatus();
     notifyListeners();
   }
 
@@ -34,7 +28,6 @@ class Product with ChangeNotifier {
         "description": this.description,
         "price": this.price,
         "imageUrl": this.imageUrl,
-        "isFavourite": this.isFavourite,
       };
 
   @override
@@ -43,20 +36,41 @@ class Product with ChangeNotifier {
   }
 }
 
+class UserFavouriteData {
+  final String id;
+  bool isFavourite;
+  final String productId;
+
+  UserFavouriteData(
+      {@required this.id,
+      @required this.isFavourite,
+      @required this.productId});
+
+  Future<void> toggleFavouriteStatus() async {
+    isFavourite = !isFavourite;
+    await FavouritesHttpHandler(resourceId: id, body: toJson).toggleFavourite();
+  }
+
+  get toJson => {
+        "isFavourite": isFavourite,
+        "productId": productId,
+      };
+}
+
 class ProductBuilder {
   String id;
   String title;
   String description;
   double price;
   String imageUrl;
-  bool isFavourite;
+  UserFavouriteData isFavourite;
 
   ProductBuilder() {
     title = "";
     description = "";
     price = 0;
     imageUrl = "";
-    isFavourite = false;
+    isFavourite = UserFavouriteData(id: "", isFavourite: false, productId: "");
   }
 
   ProductBuilder.existing(Product product) {
@@ -74,7 +88,6 @@ class ProductBuilder {
     description = data["description"];
     price = data["price"];
     imageUrl = data["imageUrl"];
-    isFavourite = data["isFavourite"];
   }
 
   ProductBuilder setId(String id) {
@@ -102,7 +115,7 @@ class ProductBuilder {
     return this;
   }
 
-  ProductBuilder setIsFavourite(bool isFavourite) {
+  ProductBuilder setIsFavourite(UserFavouriteData isFavourite) {
     this.isFavourite = isFavourite;
     return this;
   }

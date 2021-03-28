@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart';
 import 'package:shop_app/http/api_handlers/favourites_http_handler.dart';
 import 'package:shop_app/http/api_handlers/product_listing_handler.dart';
 
@@ -37,7 +40,7 @@ class Product with ChangeNotifier {
 }
 
 class UserFavouriteData {
-  final String id;
+  String id;
   bool isFavourite;
   final String productId;
 
@@ -47,8 +50,18 @@ class UserFavouriteData {
       @required this.productId});
 
   Future<void> toggleFavouriteStatus() async {
-    isFavourite = !isFavourite;
-    await FavouritesHttpHandler(resourceId: id, body: toJson).addFavourite();
+    if (isFavourite) {
+      await FavouritesHttpHandler(resourceId: id).removeFavourite();
+      isFavourite = false;
+    } else {
+      _setId = await FavouritesHttpHandler(resourceId: id, body: toJson).addFavourite();
+      isFavourite = true;
+    }
+  }
+
+  set _setId(Response response) {
+    final data = json.decode(response.body);
+    id = data["name"];
   }
 
   get toJson => {

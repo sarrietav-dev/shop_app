@@ -27,7 +27,8 @@ class FavouritesHttpHandler extends HTTPRequestHandler with StatusChecker {
 
   Future<http.Response> removeFavourite() async {
     checkResourceId();
-    final response = await http.delete(urlHandler.getResourceUrl(resourceId));
+    final url = urlHandler.getResourceUrl(resourceId);
+    final response = await http.delete(url);
     checkStatus(response);
     return response;
   }

@@ -1,4 +1,3 @@
-
 class AuthInfo {
   final String idToken;
   final DateTime expiresIn;

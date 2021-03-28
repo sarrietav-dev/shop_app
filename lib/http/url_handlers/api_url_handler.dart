@@ -7,16 +7,25 @@ class ApiUrlHandler extends ChangeNotifier {
       "flutter-meal-app-99b13-default-rtdb.firebaseio.com";
   @protected
   final String collectionName;
+  @protected
+  final bool excludeUser;
 
-  ApiUrlHandler({@required this.collectionName});
+  ApiUrlHandler({
+    @required this.collectionName,
+    this.excludeUser = false,
+  });
 
   get url {
-    return Uri.https(baseUrl, "/$collectionName.json", _tokenUrlArg);
+    return Uri.https(
+        baseUrl, "/$collectionName$_userIdRoute.json", _tokenUrlArg);
   }
 
   Uri getResourceUrl(String resourceId) {
-    return Uri.https(baseUrl, "$collectionName/$resourceId.json", _tokenUrlArg);
+    return Uri.https(
+        baseUrl, "$collectionName$_userIdRoute/$resourceId.json", _tokenUrlArg);
   }
+
+  String get _userIdRoute => excludeUser ? "" : "/${Auth.authInfo.localId}";
 
   static Map<String, String> get _tokenUrlArg => {
         "auth": Auth.authInfo.idToken,

@@ -10,7 +10,7 @@ class ProductListingHTTPHandler extends HTTPRequestHandler with StatusChecker {
 
   ProductListingHTTPHandler({body, resourceId})
       : super(resourceId: resourceId, body: body) {
-    urlHandler = ApiUrlHandler(collectionName: "products");
+    urlHandler = ApiUrlHandler(collectionName: "products", excludeUser: true);
   }
 
   @override

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:shop_app/http/api/cart_http_handler.dart';
+import 'package:shop_app/http/api_handlers/cart_http_handler.dart';
 import 'package:shop_app/models/product.dart';
 
 class CartItem {

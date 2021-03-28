@@ -28,30 +28,31 @@ class ProductListing with ChangeNotifier {
   }
 
   set _setProducts(Map<String, dynamic> data) {
-    _items = [];
+    _getFavourites.then((userFavourites) {
+      _items = [];
+      data.forEach((key, value) {
+        UserFavouriteData userFavouriteData =
+            _getFavouriteData(userFavourites, key);
 
-    Map<String, dynamic> userFavourites;
-    _getFavourites.then((value) => userFavourites = value);
-
-    data.forEach((key, value) {
-      UserFavouriteData userFavouriteData =
-          _getFavouriteData(userFavourites, key);
-
-      _items.add(ProductBuilder.json(id: key, data: value)
-          .setIsFavourite(userFavouriteData)
-          .build());
+        _items.add(ProductBuilder.json(id: key, data: value)
+            .setIsFavourite(userFavouriteData)
+            .build());
+      });
+      notifyListeners();
     });
-    notifyListeners();
   }
 
   Future<Map<String, dynamic>> get _getFavourites async {
     final response = await FavouritesHttpHandler().fetchData();
-    final data = json.decode(response.body);
-    return data ?? [];
+    return json.decode(response.body);
   }
 
   UserFavouriteData _getFavouriteData(
       Map<String, dynamic> userFavourites, String key) {
+    if (userFavourites == null)
+      return UserFavouriteData(
+          id: DateTime.now().toString(), status: false, productId: key);
+
     final favouritedProduct = userFavourites.entries.firstWhere(
         (element) => element.value["productId"] == key,
         orElse: () => null);

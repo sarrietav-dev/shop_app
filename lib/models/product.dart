@@ -45,17 +45,17 @@ class UserFavouriteData {
   final String productId;
 
   UserFavouriteData(
-      {@required this.id,
-      @required this.status,
-      @required this.productId});
+      {@required this.id, @required this.status, @required this.productId});
 
   Future<void> toggleFavouriteStatus() async {
     if (status) {
       await FavouritesHttpHandler(resourceId: id).removeFavourite();
       status = false;
     } else {
-      _setId = await FavouritesHttpHandler(resourceId: id, body: toJson).addFavourite();
-      status = true;
+      _setId = await FavouritesHttpHandler(
+          resourceId: id,
+          body: {"status": true, "productId": productId}).addFavourite();
+      this.status = true;
     }
   }
 
@@ -63,11 +63,6 @@ class UserFavouriteData {
     final data = json.decode(response.body);
     id = data["name"];
   }
-
-  get toJson => {
-        "status": status,
-        "productId": productId,
-      };
 }
 
 class ProductBuilder {

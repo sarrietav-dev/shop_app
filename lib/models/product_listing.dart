@@ -55,8 +55,13 @@ class ProductListing with ChangeNotifier {
       return UserFavouriteData(
           id: DateTime.now().toString(), isFavourite: false, productId: key);
 
-    final favouritedProduct = userFavourites.entries
-        .firstWhere((element) => element.value["productId"] == key);
+    final favouritedProduct = userFavourites.entries.firstWhere(
+        (element) => element.value["productId"] == key,
+        orElse: () => null);
+    if (favouritedProduct == null)
+      return UserFavouriteData(
+          id: DateTime.now().toString(), isFavourite: false, productId: key);
+
     return UserFavouriteData(
         id: favouritedProduct.key,
         isFavourite: favouritedProduct.value["isFavourite"],

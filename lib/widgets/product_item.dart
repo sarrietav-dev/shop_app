@@ -51,7 +51,7 @@ class __ProductItemFooterState extends State<_ProductItemFooter>
             )
           : IconButton(
               icon: Icon(
-                widget.product.isFavourite
+                widget.product.isFavourite.isFavourite
                     ? Icons.favorite
                     : Icons.favorite_outline,
                 color: Theme.of(context).accentColor,

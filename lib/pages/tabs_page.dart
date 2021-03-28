@@ -123,9 +123,9 @@ class _CartIcon extends StatelessWidget {
               );
               break;
             default:
-              return Center(
+              return const Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: EdgeInsets.all(10.0),
                   child: CircularProgressIndicator(),
                 ),
               );

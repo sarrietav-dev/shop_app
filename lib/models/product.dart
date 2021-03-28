@@ -41,21 +41,21 @@ class Product with ChangeNotifier {
 
 class UserFavouriteData {
   String id;
-  bool isFavourite;
+  bool status;
   final String productId;
 
   UserFavouriteData(
       {@required this.id,
-      @required this.isFavourite,
+      @required this.status,
       @required this.productId});
 
   Future<void> toggleFavouriteStatus() async {
-    if (isFavourite) {
+    if (status) {
       await FavouritesHttpHandler(resourceId: id).removeFavourite();
-      isFavourite = false;
+      status = false;
     } else {
       _setId = await FavouritesHttpHandler(resourceId: id, body: toJson).addFavourite();
-      isFavourite = true;
+      status = true;
     }
   }
 
@@ -65,7 +65,7 @@ class UserFavouriteData {
   }
 
   get toJson => {
-        "isFavourite": isFavourite,
+        "status": status,
         "productId": productId,
       };
 }
@@ -83,7 +83,7 @@ class ProductBuilder {
     description = "";
     price = 0;
     imageUrl = "";
-    isFavourite = UserFavouriteData(id: "", isFavourite: false, productId: "");
+    isFavourite = UserFavouriteData(id: "", status: false, productId: "");
   }
 
   ProductBuilder.existing(Product product) {

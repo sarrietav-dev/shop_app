@@ -46,15 +46,12 @@ class ProductListing with ChangeNotifier {
 
   Future<Map<String, dynamic>> get _getFavourites async {
     final response = await FavouritesHttpHandler().fetchData();
-    return json.decode(response.body);
+    final data = json.decode(response.body);
+    return data ?? [];
   }
 
   UserFavouriteData _getFavouriteData(
       Map<String, dynamic> userFavourites, String key) {
-    if (userFavourites == null)
-      return UserFavouriteData(
-          id: DateTime.now().toString(), isFavourite: false, productId: key);
-
     final favouritedProduct = userFavourites.entries.firstWhere(
         (element) => element.value["productId"] == key,
         orElse: () => null);

@@ -48,7 +48,7 @@ class UserFavouriteData {
 
   Future<void> toggleFavouriteStatus() async {
     isFavourite = !isFavourite;
-    await FavouritesHttpHandler(resourceId: id, body: toJson).toggleFavourite();
+    await FavouritesHttpHandler(resourceId: id, body: toJson).addFavourite();
   }
 
   get toJson => {

@@ -18,11 +18,16 @@ class FavouritesHttpHandler extends HTTPRequestHandler with StatusChecker {
     return response;
   }
 
-  Future<http.Response> toggleFavourite() async {
+  Future<http.Response> addFavourite() async {
     checkBody();
+    final response = await http.post(urlHandler.url, body: json.encode(body));
+    checkStatus(response);
+    return response;
+  }
+
+  Future<http.Response> removeFavourite() async {
     checkResourceId();
-    final response = await http.patch(urlHandler.getResourceUrl(resourceId),
-        body: json.encode(body));
+    final response = await http.delete(urlHandler.getResourceUrl(resourceId));
     checkStatus(response);
     return response;
   }

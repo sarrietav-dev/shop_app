@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:shop_app/models/auth.dart';
 
 class ApiUrlHandler extends ChangeNotifier {
   @protected
@@ -6,7 +7,6 @@ class ApiUrlHandler extends ChangeNotifier {
       "flutter-meal-app-99b13-default-rtdb.firebaseio.com";
   @protected
   final String collectionName;
-  static String token = "";
 
   ApiUrlHandler({@required this.collectionName});
 
@@ -19,6 +19,6 @@ class ApiUrlHandler extends ChangeNotifier {
   }
 
   static Map<String, String> get _tokenUrlArg => {
-        "auth": ApiUrlHandler.token,
+        "auth": Auth.authInfo.idToken,
       };
 }

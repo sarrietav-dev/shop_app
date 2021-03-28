@@ -15,41 +15,28 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("Your Cart"),
+      appBar: AppBar(
+        title: const Text("Your Cart"),
+      ),
+      body: Consumer<Cart>(
+        child: const SizedBox(
+          height: 10,
         ),
-        body: FutureBuilder(
-            future: Provider.of<Cart>(context, listen: false).fetchItems(),
-            builder: (context, snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.done:
-                  return Consumer<Cart>(
-                    child: const SizedBox(
-                      height: 10,
-                    ),
-                    builder: (_, cart, child) => Column(
-                      children: [
-                        _CartOverview(cart: cart),
-                        child,
-                        Expanded(
-                            child: ListView.builder(
-                                itemCount: cart.productCount,
-                                itemBuilder: (context, index) => _CartItem(
-                                      cartItemKey:
-                                          cart.items.keys.toList()[index],
-                                      cartItem:
-                                          cart.items.values.toList()[index],
-                                    )))
-                      ],
-                    ),
-                  );
-                case ConnectionState.none:
-                case ConnectionState.waiting:
-                case ConnectionState.active:
-                default:
-                  return const Center(child: const CircularProgressIndicator());
-              }
-            }));
+        builder: (_, cart, child) => Column(
+          children: [
+            _CartOverview(cart: cart),
+            child,
+            Expanded(
+                child: ListView.builder(
+                    itemCount: cart.productCount,
+                    itemBuilder: (context, index) => _CartItem(
+                          cartItemKey: cart.items.keys.toList()[index],
+                          cartItem: cart.items.values.toList()[index],
+                        )))
+          ],
+        ),
+      ),
+    );
   }
 }
 

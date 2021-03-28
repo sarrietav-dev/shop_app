@@ -108,12 +108,28 @@ class _CartIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<Cart>(
-      builder: (_, cart, child) =>
-          Badge(child: child, value: cart.productCount.toString()),
-      child: IconButton(
-          icon: const Icon(Icons.shopping_cart),
-          onPressed: () => Navigator.of(context).pushNamed(CartPage.routeName)),
-    );
+    return FutureBuilder(
+        future: Provider.of<Cart>(context, listen: false).fetchItems(),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.done:
+              return Consumer<Cart>(
+                builder: (_, cart, child) =>
+                    Badge(child: child, value: cart.productCount.toString()),
+                child: IconButton(
+                    icon: const Icon(Icons.shopping_cart),
+                    onPressed: () =>
+                        Navigator.of(context).pushNamed(CartPage.routeName)),
+              );
+              break;
+            default:
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: CircularProgressIndicator(),
+                ),
+              );
+          }
+        });
   }
 }

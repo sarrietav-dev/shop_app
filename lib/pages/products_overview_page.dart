@@ -56,7 +56,7 @@ class _ProductsGrid extends StatelessWidget {
 
     if (showFavourites)
       loadedProducts =
-          loadedProducts.where((element) => element.isFavourite).toList();
+          loadedProducts.where((element) => element.isFavourite.isFavourite).toList();
 
     return GridView.builder(
         padding: const EdgeInsets.all(10),

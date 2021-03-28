@@ -17,12 +17,12 @@ class ApiUrlHandler extends ChangeNotifier {
 
   get url {
     return Uri.https(
-        baseUrl, "/$collectionName$_userIdRoute.json", _tokenUrlArg);
+        baseUrl, "$_userIdRoute/$collectionName.json", _tokenUrlArg);
   }
 
   Uri getResourceUrl(String resourceId) {
     return Uri.https(
-        baseUrl, "$collectionName$_userIdRoute/$resourceId.json", _tokenUrlArg);
+        baseUrl, "$_userIdRoute$collectionName/$resourceId.json", _tokenUrlArg);
   }
 
   String get _userIdRoute => excludeUser ? "" : "/${Auth.authInfo.localId}";

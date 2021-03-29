@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shop_app/models/auth.dart';
 import 'package:shop_app/pages/product_management_page.dart';
 
 class MainDrawer extends StatelessWidget {
@@ -29,6 +31,7 @@ class MainDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.logout),
             title: const Text("Logout"),
+            onTap: Provider.of<Auth>(context, listen: false).logout,
           ),
         ],
       ),
@@ -52,9 +55,7 @@ class _DrawerBanner extends StatelessWidget {
         child: const Text(
           "Shopping Center",
           style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 30,
-              color: Colors.white),
+              fontWeight: FontWeight.bold, fontSize: 30, color: Colors.white),
         ));
   }
 }

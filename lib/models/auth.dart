@@ -19,4 +19,9 @@ class Auth with ChangeNotifier {
   set _setAuthInfo(AuthInfo authInfo) {
     Auth.authInfo = authInfo;
   }
+
+  void logout() {
+    authInfo = AuthInfo();
+    notifyListeners();
+  }
 }

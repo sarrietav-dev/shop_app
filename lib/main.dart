@@ -40,7 +40,21 @@ class MyApp extends StatelessWidget {
             fontFamily: "Lato",
           ),
           routes: {
-            "/": (_) => Auth.authInfo.isAuth ? TabsPage() : AuthPage(),
+            "/": (_) => Auth.authInfo.isAuth
+                ? TabsPage()
+                : FutureBuilder(
+                    future: auth.tryAutoLogin(),
+                    builder: (context, snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.done:
+                          if (snapshot.data) return TabsPage();
+                          return AuthPage();
+                        default:
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                      }
+                    }),
             ProductDetailPage.routeName: (_) => ProductDetailPage(),
             CartPage.routeName: (_) => CartPage(),
             ProductManagementPage.routeName: (_) => ProductManagementPage(),

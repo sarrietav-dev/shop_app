@@ -6,6 +6,8 @@ import 'package:shop_app/widgets/auth_card.dart';
 class AuthPage extends StatelessWidget {
   static const routeName = '/auth';
 
+  const AuthPage();
+
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;

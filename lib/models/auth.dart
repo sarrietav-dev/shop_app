@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:shop_app/http/auth_handler.dart';
@@ -19,7 +20,9 @@ class Auth with ChangeNotifier {
     _setAuthInfo = await AuthHandler(credential).login();
     _autoLogout();
     notifyListeners();
+    await _saveToken();
   }
+
 
   set _setAuthInfo(AuthInfo authInfo) {
     Auth.authInfo = authInfo;
@@ -34,5 +37,10 @@ class Auth with ChangeNotifier {
   void logout() {
     authInfo = AuthInfo();
     notifyListeners();
+  }
+
+  Future _saveToken() async {
+    final preferences = await SharedPreferences.getInstance();
+    preferences.setString("userData", json.encode(authInfo.toJson));
   }
 }

@@ -23,24 +23,44 @@ class Auth with ChangeNotifier {
     await _saveToken();
   }
 
-
   set _setAuthInfo(AuthInfo authInfo) {
     Auth.authInfo = authInfo;
   }
 
   void _autoLogout() {
     if (_logoutTimer != null) _logoutTimer.cancel();
-    var timeToExpiry = authInfo.expiresIn.difference(DateTime.now()).inSeconds;
-    _logoutTimer = Timer(Duration(seconds: timeToExpiry), logout);
+    _logoutTimer = Timer(Duration(seconds: authInfo.timeToExpiry), logout);
   }
 
   void logout() {
     authInfo = AuthInfo();
+    _clearSharedPreferences();
     notifyListeners();
+  }
+
+  void _clearSharedPreferences() async {
+    final preferences = await SharedPreferences.getInstance();
+    preferences.remove("userData");
   }
 
   Future _saveToken() async {
     final preferences = await SharedPreferences.getInstance();
     preferences.setString("userData", json.encode(authInfo.toJson));
+  }
+
+  Future<bool> tryAutoLogin() async {
+    final preferences = await SharedPreferences.getInstance();
+    if (!preferences.containsKey("userData")) return false;
+
+    final userData =
+        json.decode(preferences.getString("userData")) as Map<String, String>;
+    final extractedAuthInfo = AuthInfoBuilder.json(userData).build();
+
+    if (!extractedAuthInfo.isExpiryDateValid) return false;
+
+    Auth.authInfo = extractedAuthInfo;
+
+    notifyListeners();
+    return true;
   }
 }

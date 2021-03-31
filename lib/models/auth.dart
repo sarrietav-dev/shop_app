@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:shop_app/http/auth_handler.dart';
 import 'package:shop_app/utils/auth_info.dart';
 import 'package:shop_app/utils/credentials.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Auth with ChangeNotifier {
   static AuthInfo authInfo = AuthInfo();
@@ -24,14 +25,14 @@ class Auth with ChangeNotifier {
     Auth.authInfo = authInfo;
   }
 
-  void logout() {
-    authInfo = AuthInfo();
-    notifyListeners();
-  }
-
   void _autoLogout() {
     if (_logoutTimer != null) _logoutTimer.cancel();
     var timeToExpiry = authInfo.expiresIn.difference(DateTime.now()).inSeconds;
     _logoutTimer = Timer(Duration(seconds: timeToExpiry), logout);
+  }
+
+  void logout() {
+    authInfo = AuthInfo();
+    notifyListeners();
   }
 }

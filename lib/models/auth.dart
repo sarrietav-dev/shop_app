@@ -52,8 +52,7 @@ class Auth with ChangeNotifier {
     final preferences = await SharedPreferences.getInstance();
     if (!preferences.containsKey("userData")) return false;
 
-    final userData =
-        json.decode(preferences.getString("userData")) as Map<String, String>;
+    final userData = json.decode(preferences.getString("userData"));
     final extractedAuthInfo = AuthInfoBuilder.json(userData).build();
 
     if (!extractedAuthInfo.isExpiryDateValid) return false;

@@ -48,10 +48,13 @@ class MyApp extends StatelessWidget {
                       switch (snapshot.connectionState) {
                         case ConnectionState.done:
                           if (snapshot.data) return TabsPage();
-                          return AuthPage();
+                          return const AuthPage();
                         default:
-                          return const Center(
-                            child: CircularProgressIndicator(),
+                          return Scaffold(
+                            appBar: AppBar(),
+                            body: const Center(
+                              child: CircularProgressIndicator(),
+                            ),
                           );
                       }
                     }),

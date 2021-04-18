@@ -7,6 +7,21 @@ import 'package:shop_app/utils/credentials.dart';
 
 enum AuthMode { Signup, Login }
 
+class _AuthModeHandler {
+  static AuthMode authMode = AuthMode.Login;
+
+  static void switchAuthMode() {
+    switch (authMode) {
+      case AuthMode.Signup:
+        authMode = AuthMode.Login;
+        break;
+      case AuthMode.Login:
+        authMode = AuthMode.Signup;
+        break;
+    }
+  }
+}
+
 class AuthCard extends StatefulWidget {
   const AuthCard({
     Key key,
@@ -84,7 +99,6 @@ class _AuthCardForm extends StatefulWidget {
 
 class __AuthCardFormState extends State<_AuthCardForm> {
   var _isLoading = false;
-  AuthMode _authMode = AuthMode.Login;
 
   final GlobalKey<FormState> _formKey = GlobalKey();
   CredentialBuilder _credential = CredentialBuilder();
@@ -108,7 +122,7 @@ class __AuthCardFormState extends State<_AuthCardForm> {
     });
 
     try {
-      switch (_authMode) {
+      switch (_AuthModeHandler.authMode) {
         case AuthMode.Signup:
           await Provider.of<Auth>(context, listen: false)
               .signup(_credential.build());
@@ -168,17 +182,14 @@ class __AuthCardFormState extends State<_AuthCardForm> {
   }
 
   void _switchAuthMode() {
-    switch (_authMode) {
+    setState(() {
+      _AuthModeHandler.switchAuthMode();
+    });
+    switch (_AuthModeHandler.authMode) {
       case AuthMode.Signup:
-        setState(() {
-          _authMode = AuthMode.Login;
-        });
         widget.animationController.reverse();
         break;
       case AuthMode.Login:
-        setState(() {
-          _authMode = AuthMode.Signup;
-        });
         widget.animationController.forward();
         break;
     }
@@ -213,21 +224,21 @@ class __AuthCardFormState extends State<_AuthCardForm> {
               },
               onSaved: _credential.setPassword,
             ),
-            if (_authMode == AuthMode.Signup)
+            if (_AuthModeHandler.authMode == AuthMode.Signup)
               AnimatedContainer(
                 duration: Duration(milliseconds: 300),
                 constraints: BoxConstraints(
-                    minHeight: _authMode == AuthMode.Signup ? 60 : 0,
-                    maxHeight: _authMode == AuthMode.Signup ? 120 : 0),
+                    minHeight: _AuthModeHandler.authMode == AuthMode.Signup ? 60 : 0,
+                    maxHeight: _AuthModeHandler.authMode == AuthMode.Signup ? 120 : 0),
                 curve: Curves.easeIn,
                 child: FadeTransition(
                   opacity: _opacityAnimation,
                   child: TextFormField(
-                    enabled: _authMode == AuthMode.Signup,
+                    enabled: _AuthModeHandler.authMode == AuthMode.Signup,
                     decoration:
                         const InputDecoration(labelText: 'Confirm Password'),
                     obscureText: true,
-                    validator: _authMode == AuthMode.Signup
+                    validator: _AuthModeHandler.authMode == AuthMode.Signup
                         ? (value) {
                             if (value != _passwordController.text)
                               return 'Passwords do not match!';
@@ -244,7 +255,7 @@ class __AuthCardFormState extends State<_AuthCardForm> {
               const CircularProgressIndicator()
             else
               ElevatedButton(
-                child: Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
+                child: Text(_AuthModeHandler.authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
                 onPressed: _submit,
                 style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
@@ -255,7 +266,7 @@ class __AuthCardFormState extends State<_AuthCardForm> {
               ),
             TextButton(
               child: Text(
-                  '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
+                  '${_AuthModeHandler.authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
               onPressed: _switchAuthMode,
               style: TextButton.styleFrom(
                 padding:

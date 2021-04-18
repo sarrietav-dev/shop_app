@@ -3,18 +3,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:shop_app/widgets/auth_card.dart';
 
-class AuthPage extends StatefulWidget {
+class AuthPage extends StatelessWidget {
   static const routeName = '/auth';
 
   const AuthPage();
-
-  @override
-  _AuthPageState createState() => _AuthPageState();
-}
-
-class _AuthPageState extends State<AuthPage> {
-
-  @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
     // final transformConfig = Matrix4.rotationZ(-8 * pi / 180);

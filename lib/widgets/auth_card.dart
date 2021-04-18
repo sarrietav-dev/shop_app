@@ -69,9 +69,11 @@ class _AuthCardState extends State<AuthCard>
         animation: _heightAnimation,
         builder: (context, child) {
           return Container(
-            height: _heightAnimation.value.height,
-            constraints:
-                BoxConstraints(minHeight: _heightAnimation.value.height),
+            height: _AuthModeHandler.authMode == AuthMode.Signup ? 320 : 260,
+            constraints: BoxConstraints(
+              minHeight:
+                  _AuthModeHandler.authMode == AuthMode.Signup ? 320 : 260,
+            ),
             width: deviceSize.width * 0.75,
             padding: const EdgeInsets.all(16.0),
             child: child,
@@ -108,8 +110,9 @@ class __AuthCardFormState extends State<_AuthCardForm> {
   @override
   void initState() {
     super.initState();
-    _opacityAnimation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
-        parent: widget.animationController, curve: Curves.easeIn));
+    _opacityAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+        CurvedAnimation(
+            parent: widget.animationController, curve: Curves.easeIn));
   }
 
   void _submit() async {
@@ -228,8 +231,10 @@ class __AuthCardFormState extends State<_AuthCardForm> {
               AnimatedContainer(
                 duration: Duration(milliseconds: 300),
                 constraints: BoxConstraints(
-                    minHeight: _AuthModeHandler.authMode == AuthMode.Signup ? 60 : 0,
-                    maxHeight: _AuthModeHandler.authMode == AuthMode.Signup ? 120 : 0),
+                    minHeight:
+                        _AuthModeHandler.authMode == AuthMode.Signup ? 60 : 0,
+                    maxHeight:
+                        _AuthModeHandler.authMode == AuthMode.Signup ? 120 : 0),
                 curve: Curves.easeIn,
                 child: FadeTransition(
                   opacity: _opacityAnimation,
@@ -255,7 +260,9 @@ class __AuthCardFormState extends State<_AuthCardForm> {
               const CircularProgressIndicator()
             else
               ElevatedButton(
-                child: Text(_AuthModeHandler.authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
+                child: Text(_AuthModeHandler.authMode == AuthMode.Login
+                    ? 'LOGIN'
+                    : 'SIGN UP'),
                 onPressed: _submit,
                 style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(

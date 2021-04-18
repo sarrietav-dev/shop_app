@@ -41,6 +41,12 @@ class _AuthCardState extends State<AuthCard>
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   void _submit() async {
     if (!_formKey.currentState.validate()) return; // Invalid!
 

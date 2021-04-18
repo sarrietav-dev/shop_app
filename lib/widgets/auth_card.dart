@@ -18,13 +18,14 @@ class AuthCard extends StatefulWidget {
 
 class _AuthCardState extends State<AuthCard>
     with SingleTickerProviderStateMixin {
-  final GlobalKey<FormState> _formKey = GlobalKey();
-  AuthMode _authMode = AuthMode.Login;
-  CredentialBuilder _credential = CredentialBuilder();
   var _isLoading = false;
-  final _passwordController = TextEditingController();
+  AuthMode _authMode = AuthMode.Login;
   AnimationController _animationController;
   Animation<Size> _heightAnimation;
+
+  final GlobalKey<FormState> _formKey = GlobalKey();
+  CredentialBuilder _credential = CredentialBuilder();
+  final _passwordController = TextEditingController();
 
   @override
   void initState() {
@@ -122,13 +123,13 @@ class _AuthCardState extends State<AuthCard>
         setState(() {
           _authMode = AuthMode.Login;
         });
-        _animationController.forward();
+        _animationController.reverse();
         break;
       case AuthMode.Login:
         setState(() {
           _authMode = AuthMode.Signup;
         });
-        _animationController.reverse();
+        _animationController.forward();
         break;
     }
   }

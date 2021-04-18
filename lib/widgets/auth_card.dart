@@ -62,7 +62,10 @@ class _AuthCardState extends State<AuthCard>
             child: child,
           );
         },
-        child: _AuthCardForm(),
+        child: _AuthCardForm(
+          animationController: _animationController,
+          heightAnimation: _heightAnimation,
+        ),
       ),
     );
   }
@@ -72,7 +75,8 @@ class _AuthCardForm extends StatefulWidget {
   final AnimationController animationController;
   final Animation<Size> heightAnimation;
 
-  _AuthCardForm({this.animationController, this.heightAnimation});
+  _AuthCardForm(
+      {@required this.animationController, @required this.heightAnimation});
 
   @override
   __AuthCardFormState createState() => __AuthCardFormState();

@@ -18,14 +18,8 @@ class AuthCard extends StatefulWidget {
 
 class _AuthCardState extends State<AuthCard>
     with SingleTickerProviderStateMixin {
-  var _isLoading = false;
-  AuthMode _authMode = AuthMode.Login;
   AnimationController _animationController;
   Animation<Size> _heightAnimation;
-
-  final GlobalKey<FormState> _formKey = GlobalKey();
-  CredentialBuilder _credential = CredentialBuilder();
-  final _passwordController = TextEditingController();
 
   @override
   void initState() {
@@ -47,6 +41,50 @@ class _AuthCardState extends State<AuthCard>
     _animationController.dispose();
     super.dispose();
   }
+
+  @override
+  Widget build(BuildContext context) {
+    final deviceSize = MediaQuery.of(context).size;
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      elevation: 8.0,
+      child: AnimatedBuilder(
+        animation: _heightAnimation,
+        builder: (context, child) {
+          return Container(
+            height: _heightAnimation.value.height,
+            constraints:
+                BoxConstraints(minHeight: _heightAnimation.value.height),
+            width: deviceSize.width * 0.75,
+            padding: const EdgeInsets.all(16.0),
+            child: child,
+          );
+        },
+        child: _AuthCardForm(),
+      ),
+    );
+  }
+}
+
+class _AuthCardForm extends StatefulWidget {
+  final AnimationController animationController;
+  final Animation<Size> heightAnimation;
+
+  _AuthCardForm({this.animationController, this.heightAnimation});
+
+  @override
+  __AuthCardFormState createState() => __AuthCardFormState();
+}
+
+class __AuthCardFormState extends State<_AuthCardForm> {
+  var _isLoading = false;
+  AuthMode _authMode = AuthMode.Login;
+
+  final GlobalKey<FormState> _formKey = GlobalKey();
+  CredentialBuilder _credential = CredentialBuilder();
+  final _passwordController = TextEditingController();
 
   void _submit() async {
     if (!_formKey.currentState.validate()) return; // Invalid!
@@ -123,101 +161,87 @@ class _AuthCardState extends State<AuthCard>
         setState(() {
           _authMode = AuthMode.Login;
         });
-        _animationController.reverse();
+        widget.animationController.reverse();
         break;
       case AuthMode.Login:
         setState(() {
           _authMode = AuthMode.Signup;
         });
-        _animationController.forward();
+        widget.animationController.forward();
         break;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      elevation: 8.0,
-      child: Container(
-        height: _heightAnimation.value.height,
-        constraints: BoxConstraints(minHeight: _heightAnimation.value.height),
-        width: deviceSize.width * 0.75,
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'E-Mail'),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value.isEmpty || !value.contains('@')) {
-                      return 'Invalid email!';
-                    }
-                    return null;
-                  },
-                  onSaved: _credential.setEmail,
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: 'Password'),
-                  obscureText: true,
-                  controller: _passwordController,
-                  validator: (value) {
-                    if (value.isEmpty || value.length < 5)
-                      return 'Password is too short!';
-                    return null;
-                  },
-                  onSaved: _credential.setPassword,
-                ),
-                if (_authMode == AuthMode.Signup)
-                  TextFormField(
-                    enabled: _authMode == AuthMode.Signup,
-                    decoration:
-                        const InputDecoration(labelText: 'Confirm Password'),
-                    obscureText: true,
-                    validator: _authMode == AuthMode.Signup
-                        ? (value) {
-                            if (value != _passwordController.text)
-                              return 'Passwords do not match!';
-                            return null;
-                          }
-                        : null,
-                  ),
-                const SizedBox(
-                  height: 20,
-                ),
-                if (_isLoading)
-                  const CircularProgressIndicator()
-                else
-                  ElevatedButton(
-                    child:
-                        Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
-                    onPressed: _submit,
-                    style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 30.0, vertical: 8.0),
-                        shape: const RoundedRectangleBorder(
-                            borderRadius: const BorderRadius.all(
-                                const Radius.circular(10)))),
-                  ),
-                TextButton(
-                  child: Text(
-                      '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
-                  onPressed: _switchAuthMode,
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30.0, vertical: 4),
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  ),
-                ),
-              ],
+    return Form(
+      key: _formKey,
+      child: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            TextFormField(
+              decoration: InputDecoration(labelText: 'E-Mail'),
+              keyboardType: TextInputType.emailAddress,
+              validator: (value) {
+                if (value.isEmpty || !value.contains('@')) {
+                  return 'Invalid email!';
+                }
+                return null;
+              },
+              onSaved: _credential.setEmail,
             ),
-          ),
+            TextFormField(
+              decoration: const InputDecoration(labelText: 'Password'),
+              obscureText: true,
+              controller: _passwordController,
+              validator: (value) {
+                if (value.isEmpty || value.length < 5)
+                  return 'Password is too short!';
+                return null;
+              },
+              onSaved: _credential.setPassword,
+            ),
+            if (_authMode == AuthMode.Signup)
+              TextFormField(
+                enabled: _authMode == AuthMode.Signup,
+                decoration:
+                    const InputDecoration(labelText: 'Confirm Password'),
+                obscureText: true,
+                validator: _authMode == AuthMode.Signup
+                    ? (value) {
+                        if (value != _passwordController.text)
+                          return 'Passwords do not match!';
+                        return null;
+                      }
+                    : null,
+              ),
+            const SizedBox(
+              height: 20,
+            ),
+            if (_isLoading)
+              const CircularProgressIndicator()
+            else
+              ElevatedButton(
+                child: Text(_authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP'),
+                onPressed: _submit,
+                style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30.0, vertical: 8.0),
+                    shape: const RoundedRectangleBorder(
+                        borderRadius:
+                            const BorderRadius.all(const Radius.circular(10)))),
+              ),
+            TextButton(
+              child: Text(
+                  '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
+              onPressed: _switchAuthMode,
+              style: TextButton.styleFrom(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+            ),
+          ],
         ),
       ),
     );

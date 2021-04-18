@@ -3,10 +3,16 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:shop_app/widgets/auth_card.dart';
 
-class AuthPage extends StatelessWidget {
+class AuthPage extends StatefulWidget {
   static const routeName = '/auth';
 
   const AuthPage();
+
+  @override
+  _AuthPageState createState() => _AuthPageState();
+}
+
+class _AuthPageState extends State<AuthPage> {
 
   @override
   Widget build(BuildContext context) {

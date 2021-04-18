@@ -1,96 +1,23 @@
+import 'package:flutter/material.dart';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
-import 'package:intl/number_symbols_data.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/models/auth.dart';
 import 'package:shop_app/utils/credentials.dart';
+import 'package:shop_app/widgets/auth-card/auth_mode.dart';
+import 'package:shop_app/widgets/auth-card/exception_handling.dart';
 
-enum AuthMode { Signup, Login }
-
-class _AuthModeHandler {
-  static AuthMode authMode = AuthMode.Login;
-
-  static void switchAuthMode() {
-    switch (authMode) {
-      case AuthMode.Signup:
-        authMode = AuthMode.Login;
-        break;
-      case AuthMode.Login:
-        authMode = AuthMode.Signup;
-        break;
-    }
-  }
-}
-
-class AuthCard extends StatefulWidget {
-  const AuthCard({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  _AuthCardState createState() => _AuthCardState();
-}
-
-class _AuthCardState extends State<AuthCard>
-    with SingleTickerProviderStateMixin {
-  AnimationController _animationController;
-
-  @override
-  void initState() {
-    _animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  void switchAuthMode() {
-    setState(() {
-      _AuthModeHandler.switchAuthMode();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      elevation: 8.0,
-      child: AnimatedContainer(
-        duration: Duration(milliseconds: 300),
-        height: _AuthModeHandler.authMode == AuthMode.Signup ? 320 : 260,
-        constraints: BoxConstraints(
-          minHeight: _AuthModeHandler.authMode == AuthMode.Signup ? 320 : 260,
-        ),
-        width: deviceSize.width * 0.75,
-        padding: const EdgeInsets.all(16.0),
-        child: _AuthCardForm(
-          animationController: _animationController,
-          switchAuthMode: switchAuthMode,
-        ),
-      ),
-    );
-  }
-}
-
-class _AuthCardForm extends StatefulWidget {
+class AuthCardForm extends StatefulWidget {
   final AnimationController animationController;
   final Function switchAuthMode;
 
-  _AuthCardForm({@required this.animationController, this.switchAuthMode});
+  AuthCardForm({@required this.animationController, this.switchAuthMode});
 
   @override
-  __AuthCardFormState createState() => __AuthCardFormState();
+  _AuthCardFormState createState() => _AuthCardFormState();
 }
 
-class __AuthCardFormState extends State<_AuthCardForm> with _ExceptionHandlers {
+class _AuthCardFormState extends State<AuthCardForm> with AuthCardExceptionHandling {
   Animation<double> _opacityAnimation;
   Animation<Offset> _slideAnimation;
   var _isLoading = false;
@@ -120,7 +47,7 @@ class __AuthCardFormState extends State<_AuthCardForm> with _ExceptionHandlers {
     });
 
     try {
-      switch (_AuthModeHandler.authMode) {
+      switch (AuthModeHandler.authMode) {
         case AuthMode.Signup:
           await Provider.of<Auth>(context, listen: false)
               .signup(_credential.build());
@@ -141,7 +68,7 @@ class __AuthCardFormState extends State<_AuthCardForm> with _ExceptionHandlers {
 
   void _switchAuthMode() {
     widget.switchAuthMode();
-    switch (_AuthModeHandler.authMode) {
+    switch (AuthModeHandler.authMode) {
       case AuthMode.Signup:
         widget.animationController.reverse();
         break;
@@ -180,25 +107,25 @@ class __AuthCardFormState extends State<_AuthCardForm> with _ExceptionHandlers {
               },
               onSaved: _credential.setPassword,
             ),
-            if (_AuthModeHandler.authMode == AuthMode.Signup)
+            if (AuthModeHandler.authMode == AuthMode.Signup)
               AnimatedContainer(
                 duration: Duration(milliseconds: 300),
                 constraints: BoxConstraints(
                     minHeight:
-                        _AuthModeHandler.authMode == AuthMode.Signup ? 60 : 0,
+                        AuthModeHandler.authMode == AuthMode.Signup ? 60 : 0,
                     maxHeight:
-                        _AuthModeHandler.authMode == AuthMode.Signup ? 120 : 0),
+                        AuthModeHandler.authMode == AuthMode.Signup ? 120 : 0),
                 curve: Curves.easeIn,
                 child: FadeTransition(
                   opacity: _opacityAnimation,
                   child: SlideTransition(
                     position: _slideAnimation,
                     child: TextFormField(
-                      enabled: _AuthModeHandler.authMode == AuthMode.Signup,
+                      enabled: AuthModeHandler.authMode == AuthMode.Signup,
                       decoration:
                           const InputDecoration(labelText: 'Confirm Password'),
                       obscureText: true,
-                      validator: _AuthModeHandler.authMode == AuthMode.Signup
+                      validator: AuthModeHandler.authMode == AuthMode.Signup
                           ? (value) {
                               if (value != _passwordController.text)
                                 return 'Passwords do not match!';
@@ -216,7 +143,7 @@ class __AuthCardFormState extends State<_AuthCardForm> with _ExceptionHandlers {
               const CircularProgressIndicator()
             else
               ElevatedButton(
-                child: Text(_AuthModeHandler.authMode == AuthMode.Login
+                child: Text(AuthModeHandler.authMode == AuthMode.Login
                     ? 'LOGIN'
                     : 'SIGN UP'),
                 onPressed: _submit,
@@ -229,7 +156,7 @@ class __AuthCardFormState extends State<_AuthCardForm> with _ExceptionHandlers {
               ),
             TextButton(
               child: Text(
-                  '${_AuthModeHandler.authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
+                  '${AuthModeHandler.authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
               onPressed: _switchAuthMode,
               style: TextButton.styleFrom(
                 padding:
@@ -241,47 +168,5 @@ class __AuthCardFormState extends State<_AuthCardForm> with _ExceptionHandlers {
         ),
       ),
     );
-  }
-}
-
-mixin _ExceptionHandlers {
-  void handleHttpException(HttpException e, BuildContext context) => showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-            title: Text("An error ocurred"),
-            content: Text(getErrorContentText(e)),
-            actions: [
-              TextButton(
-                  onPressed: Navigator.of(context).pop, child: Text("Ok")),
-            ],
-          ));
-
-  String getErrorContentText(HttpException e) {
-    switch (e.message) {
-      case "EMAIL_EXISTS":
-        return "The email address is already in use by another account.";
-        break;
-      case "OPERATION_NOT_ALLOWED":
-        return "Password sign-in is disabled for this project.";
-        break;
-      case "TOO_MANY_ATTEMPTS_TRY_LATER":
-        return "We have blocked all requests from this device due to unusual activity. Try again later.";
-        break;
-      case "EMAIL_NOT_FOUND":
-        return "There is no user record corresponding to this identifier. The user may have been deleted.";
-        break;
-      case "INVALID_PASSWORD":
-        return " The password is invalid or the user does not have a password.";
-        break;
-      case "USER_DISABLED":
-        return "The user account has been disabled by an administrator.";
-        break;
-      case "WEAK_PASSWORD":
-        return "The password must be 6 characters long or more";
-        break;
-      default:
-        return "Authentication has failed";
-        break;
-    }
   }
 }

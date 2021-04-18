@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:intl/number_symbols_data.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/models/auth.dart';
 import 'package:shop_app/utils/credentials.dart';
@@ -48,6 +49,12 @@ class _AuthCardState extends State<AuthCard>
     super.dispose();
   }
 
+  void switchAuthMode() {
+    setState(() {
+      _AuthModeHandler.switchAuthMode();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
@@ -58,13 +65,15 @@ class _AuthCardState extends State<AuthCard>
       elevation: 8.0,
       child: AnimatedContainer(
         duration: Duration(milliseconds: 300),
-        child: Container(
-          height: _AuthModeHandler.authMode == AuthMode.Signup ? 320 : 260,
-          constraints: BoxConstraints(
-            minHeight: _AuthModeHandler.authMode == AuthMode.Signup ? 320 : 260,
-          ),
-          width: deviceSize.width * 0.75,
-          padding: const EdgeInsets.all(16.0),
+        height: _AuthModeHandler.authMode == AuthMode.Signup ? 320 : 260,
+        constraints: BoxConstraints(
+          minHeight: _AuthModeHandler.authMode == AuthMode.Signup ? 320 : 260,
+        ),
+        width: deviceSize.width * 0.75,
+        padding: const EdgeInsets.all(16.0),
+        child: _AuthCardForm(
+          animationController: _animationController,
+          switchAuthMode: switchAuthMode,
         ),
       ),
     );
@@ -73,20 +82,22 @@ class _AuthCardState extends State<AuthCard>
 
 class _AuthCardForm extends StatefulWidget {
   final AnimationController animationController;
+  final Function switchAuthMode;
 
-  _AuthCardForm({@required this.animationController});
+  _AuthCardForm({@required this.animationController, this.switchAuthMode});
 
   @override
   __AuthCardFormState createState() => __AuthCardFormState();
 }
 
 class __AuthCardFormState extends State<_AuthCardForm> with _ExceptionHandlers {
+  Animation<double> _opacityAnimation;
+  Animation<Offset> _slideAnimation;
   var _isLoading = false;
 
   final GlobalKey<FormState> _formKey = GlobalKey();
   CredentialBuilder _credential = CredentialBuilder();
   final _passwordController = TextEditingController();
-  Animation<double> _opacityAnimation;
 
   @override
   void initState() {
@@ -94,6 +105,9 @@ class __AuthCardFormState extends State<_AuthCardForm> with _ExceptionHandlers {
     _opacityAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
         CurvedAnimation(
             parent: widget.animationController, curve: Curves.easeIn));
+    _slideAnimation = Tween<Offset>(end: Offset(0, -1.5), begin: Offset(0, 0))
+        .animate(CurvedAnimation(
+            parent: widget.animationController, curve: Curves.fastOutSlowIn));
   }
 
   void _submit() async {
@@ -126,9 +140,7 @@ class __AuthCardFormState extends State<_AuthCardForm> with _ExceptionHandlers {
   }
 
   void _switchAuthMode() {
-    setState(() {
-      _AuthModeHandler.switchAuthMode();
-    });
+    widget.switchAuthMode();
     switch (_AuthModeHandler.authMode) {
       case AuthMode.Signup:
         widget.animationController.reverse();
@@ -179,18 +191,21 @@ class __AuthCardFormState extends State<_AuthCardForm> with _ExceptionHandlers {
                 curve: Curves.easeIn,
                 child: FadeTransition(
                   opacity: _opacityAnimation,
-                  child: TextFormField(
-                    enabled: _AuthModeHandler.authMode == AuthMode.Signup,
-                    decoration:
-                        const InputDecoration(labelText: 'Confirm Password'),
-                    obscureText: true,
-                    validator: _AuthModeHandler.authMode == AuthMode.Signup
-                        ? (value) {
-                            if (value != _passwordController.text)
-                              return 'Passwords do not match!';
-                            return null;
-                          }
-                        : null,
+                  child: SlideTransition(
+                    position: _slideAnimation,
+                    child: TextFormField(
+                      enabled: _AuthModeHandler.authMode == AuthMode.Signup,
+                      decoration:
+                          const InputDecoration(labelText: 'Confirm Password'),
+                      obscureText: true,
+                      validator: _AuthModeHandler.authMode == AuthMode.Signup
+                          ? (value) {
+                              if (value != _passwordController.text)
+                                return 'Passwords do not match!';
+                              return null;
+                            }
+                          : null,
+                    ),
                   ),
                 ),
               ),

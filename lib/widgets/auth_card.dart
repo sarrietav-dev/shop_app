@@ -34,20 +34,11 @@ class AuthCard extends StatefulWidget {
 class _AuthCardState extends State<AuthCard>
     with SingleTickerProviderStateMixin {
   AnimationController _animationController;
-  Animation<Size> _heightAnimation;
 
   @override
   void initState() {
     _animationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 300));
-    _heightAnimation = Tween<Size>(
-            begin: Size(double.infinity, 260), end: Size(double.infinity, 320))
-        .animate(CurvedAnimation(
-            parent: _animationController, curve: Curves.fastOutSlowIn));
-    _heightAnimation.addListener(() {
-      setState(() {});
-    });
-
     super.initState();
   }
 
@@ -65,23 +56,15 @@ class _AuthCardState extends State<AuthCard>
         borderRadius: BorderRadius.circular(10.0),
       ),
       elevation: 8.0,
-      child: AnimatedBuilder(
-        animation: _heightAnimation,
-        builder: (context, child) {
-          return Container(
-            height: _AuthModeHandler.authMode == AuthMode.Signup ? 320 : 260,
-            constraints: BoxConstraints(
-              minHeight:
-                  _AuthModeHandler.authMode == AuthMode.Signup ? 320 : 260,
-            ),
-            width: deviceSize.width * 0.75,
-            padding: const EdgeInsets.all(16.0),
-            child: child,
-          );
-        },
-        child: _AuthCardForm(
-          animationController: _animationController,
-          heightAnimation: _heightAnimation,
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 300),
+        child: Container(
+          height: _AuthModeHandler.authMode == AuthMode.Signup ? 320 : 260,
+          constraints: BoxConstraints(
+            minHeight: _AuthModeHandler.authMode == AuthMode.Signup ? 320 : 260,
+          ),
+          width: deviceSize.width * 0.75,
+          padding: const EdgeInsets.all(16.0),
         ),
       ),
     );
@@ -90,10 +73,8 @@ class _AuthCardState extends State<AuthCard>
 
 class _AuthCardForm extends StatefulWidget {
   final AnimationController animationController;
-  final Animation<Size> heightAnimation;
 
-  _AuthCardForm(
-      {@required this.animationController, @required this.heightAnimation});
+  _AuthCardForm({@required this.animationController});
 
   @override
   __AuthCardFormState createState() => __AuthCardFormState();

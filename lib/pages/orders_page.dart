@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/models/orders.dart';
@@ -39,6 +41,7 @@ class _OrdersPageState extends State<OrdersPage> {
             : SingleChildScrollView(
                 child: Consumer<Orders>(
                   builder: (context, orders, child) => ExpansionPanelList(
+                      animationDuration: Duration(milliseconds: 300),
                       expansionCallback: (index, isExpanded) {
                         setState(() {
                           orders.orders[index].isExpanded = !isExpanded;
@@ -71,7 +74,7 @@ class _ExpansionPanelBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 200,
+      height: min(order.products.length * 20.0 + 75, 100),
       child: ListView.builder(
           itemCount: order.products.length,
           itemBuilder: (context, index) =>

@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:shop_app/http/api_handlers/favourites_http_handler.dart';
-import 'package:shop_app/http/api_handlers/product_listing_handler.dart';
+import 'package:shop_app/helpers/http/api_handlers/favourites_http_handler.dart';
+import 'package:shop_app/helpers/http/api_handlers/product_listing_handler.dart';
 import 'package:shop_app/models/product.dart';
 
 class ProductListing with ChangeNotifier {

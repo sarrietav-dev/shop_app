@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:shop_app/http/api_handlers/orders_http_handler.dart';
+import 'package:shop_app/helpers/http/api_handlers/orders_http_handler.dart';
 import 'package:shop_app/models/cart.dart';
 
 mixin Expandable {

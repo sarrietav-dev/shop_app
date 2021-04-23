@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
-import 'package:shop_app/http/api_handlers/favourites_http_handler.dart';
+import 'package:shop_app/helpers/http/api_handlers/favourites_http_handler.dart';
 
 class Product with ChangeNotifier {
   final String id;
